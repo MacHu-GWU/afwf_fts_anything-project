@@ -1,0 +1,4 @@
+Alfred-Workflow
+whoosh==2.7.4
+pathlib_mate>=0.0.14
+attrs_mate>=0.0.2
