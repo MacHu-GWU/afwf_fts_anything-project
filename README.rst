@@ -32,6 +32,15 @@
 The Alfred Workflow: Full Text Search Anything
 ==============================================================================
 
+.. contents::
+    :local:
+    :depth: 1
+
+.. _introduction:
+
+Introduction
+------------------------------------------------------------------------------
+
 ``fts.anything`` is an `Alfred Workflow <https://www.alfredapp.com/workflows/>`_ allow you to **custom full-text search on your own dataset**. You can easily define **which fields you want to search**, **how you want the data to be matched** and **send the result to other workflow to process**.
 
 How it works:
@@ -107,7 +116,7 @@ Install
 Go to `Release <https://github.com/MacHu-GWU/afwf_fts_anything-project/releases>`_, download the latest ``Full-Text-Search-Anything.alfredworkflow``. And double click to install to alfred.
 
 
-Usage
+Usage Guide
 ------------------------------------------------------------------------------
 
 1. Create an ``.alfred-fts`` directory in your ``${HOME}`` dir (``/Users/<username>``). This is where you put your dataset file and setting file.
