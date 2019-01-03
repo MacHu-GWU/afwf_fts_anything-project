@@ -98,11 +98,11 @@ Search Setting (content of ``movie-setting.json``):
                 "type_is_keyword": true
             }
         ],
-        "title_field": "title", // title on Alfred drop down menu
+        "title_field": "{title} ({genres})", // title on Alfred drop down menu
         "subtitle_field": "description", // subtitle on Alfred drop down menu
         "arg_field": "movie_id", // argument for other workflow component
         "autocomplete_field": "{movie_id} - {title}", // tab auto complete behavior
-        "icon_field": "/Users/sanhehu/.alfred-fts/movie-icon.png"
+        "icon_field": "/Users/<username>/.alfred-fts/movie-icon.png"
     }
 
 
@@ -171,7 +171,7 @@ It is a dictonary with 6 fields:
         "subtitle_field": "description", // subtitle on Alfred drop down menu
         "arg_field": "movie_id", // argument for other workflow component
         "autocomplete_field": "{movie_id} - {title}", // tab auto complete behavior
-        "icon_field": "/Users/sanhehu/.alfred-fts/movie-icon.png"
+        "icon_field": "/Users/<username>/.alfred-fts/movie-icon.png"
     }
 
 **Column Setting**:
