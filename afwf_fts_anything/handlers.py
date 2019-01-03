@@ -27,20 +27,56 @@ def main(wf, args=None):
     elif n_args >= 2:
         dataset_name = args[0]
         dataset = DataSet(dataset_name)
-        dataset.update_setting_from_file()
+
+        try:
+            dataset.update_setting_from_file()
+        except Exception as e:
+            wf.add_item(
+                title="{}-setting.json format is broken!".format(dataset_name),
+                subtitle="please check for unexpected trailing comma!",
+                valid=True,
+            )
+            return wf
+
         index_dir = dataset.get_index_dir_path()
         if index_dir.exists():
             pass
         else:
             idx = dataset.get_index()
-            dataset.update_data_from_file()
-            dataset.build_index(idx)
+            try:
+                dataset.update_data_from_file()
+            except Exception as e:
+                dataset.remove_index()
+                wf.add_item(
+                    title="{}.json format is broken!".format(dataset_name),
+                    subtitle="please check for unexpected trailing comma!",
+                    valid=True,
+                )
+                return wf
+            try:
+                dataset.build_index(idx)
+            except Exception as e:
+                dataset.remove_index()
+                wf.add_item(
+                    title="data is not compatible with your settings!".format(
+                        dataset_name),
+                    valid=True,
+                )
+                return wf
         query_str = " ".join(args[1:])
         result = dataset.search(query_str)
         if len(result):
             for doc in result:
-                item = dataset.setting.convert_to_item(doc)
-                wf.add_item(valid=True, **item.to_dict())
+                try:
+                    item = dataset.setting.convert_to_item(doc)
+                    wf.add_item(valid=True, **item.to_dict())
+                except Exception as e:
+                    wf.add_item(
+                        title="unable to convert this record to item",
+                        subtitle=str(doc),
+                        valid=True,
+                    )
+
         else:
             wf.add_item(
                 title=MSG_FOUND_NOTHING,

@@ -3,7 +3,7 @@
 import hashlib
 
 
-def md5_file(path):
+def md5_file(path):  # pragma: no cover
     """
     Get md5 check sum of a file.
     """

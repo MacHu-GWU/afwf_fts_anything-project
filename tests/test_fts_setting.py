@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import pytest
 from pathlib_mate import PathCls as Path
 from afwf_fts_anything.constant import ALFRED_FTS
@@ -12,7 +13,7 @@ class TestColumnSetting(object):
             ColumnSetting(name="a")
         with pytest.raises(ValueError):
             ColumnSetting(name="a",
-                type_is_ngram=True, type_is_phrase=True, type_is_keyword=True)
+                          type_is_ngram=True, type_is_phrase=True, type_is_keyword=True)
 
 
 class TestSetting(object):
@@ -30,32 +31,32 @@ class TestSetting(object):
         icon_field=Path(ALFRED_FTS, "movie-icon.png").abspath,
     )
     setting2 = Setting.from_dict({
-            "columns": [
-                {
-                    "name": "movie_id",
-                    "type_is_store": True,
-                },
-                {
-                    "name": "title",
-                    "type_is_ngram": True,
-                    "ngram_minsize": 2,
-                    "ngram_maxsize": 10,
-                },
-                {
-                    "name": "description",
-                    "type_is_phrase": True,
-                },
-                {
-                    "name": "genres",
-                    "type_is_keyword": True,
-                    "keyword_lowercase": True,
-                },
-            ],
-            "title_field": "title",
-            "subtitle_field": "description",
-            "arg_field": "movie_id",
-            "autocomplete_field": "{movie_id} - {title}",
-            "icon_field": Path(ALFRED_FTS, "movie-icon.png").abspath,
+        "columns": [
+            {
+                "name": "movie_id",
+                "type_is_store": True,
+            },
+            {
+                "name": "title",
+                "type_is_ngram": True,
+                "ngram_minsize": 2,
+                "ngram_maxsize": 10,
+            },
+            {
+                "name": "description",
+                "type_is_phrase": True,
+            },
+            {
+                "name": "genres",
+                "type_is_keyword": True,
+                "keyword_lowercase": True,
+            },
+        ],
+        "title_field": "title",
+        "subtitle_field": "description",
+        "arg_field": "movie_id",
+        "autocomplete_field": "{movie_id} - {title}",
+        "icon_field": Path(ALFRED_FTS, "movie-icon.png").abspath,
     })
 
     def test_columns_property(self):
@@ -63,7 +64,8 @@ class TestSetting(object):
         assert self.setting1.ngram_columns == ["title", ]
         assert self.setting1.phrase_columns == ["description", ]
         assert self.setting1.keyword_columns == ["genres", ]
-        assert self.setting1.searchable_columns == ["title", "description", "genres"]
+        assert self.setting1.searchable_columns == [
+            "title", "description", "genres"]
 
     def test_create_whoosh_schema(self):
         schema = self.setting1.create_whoosh_schema()

@@ -1,37 +1,17 @@
 
-.. image:: https://readthedocs.org/projects/afwf_fts_anything/badge/?version=latest
-    :target: https://afwf_fts_anything.readthedocs.io/?badge=latest
-    :alt: Documentation Status
-
 .. image:: https://travis-ci.org/MacHu-GWU/afwf_fts_anything-project.svg?branch=master
     :target: https://travis-ci.org/MacHu-GWU/afwf_fts_anything-project?branch=master
 
 .. image:: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project
 
-.. image:: https://img.shields.io/pypi/v/afwf_fts_anything.svg
-    :target: https://pypi.python.org/pypi/afwf_fts_anything
-
-.. image:: https://img.shields.io/pypi/l/afwf_fts_anything.svg
-    :target: https://pypi.python.org/pypi/afwf_fts_anything
-
-.. image:: https://img.shields.io/pypi/pyversions/afwf_fts_anything.svg
-    :target: https://pypi.python.org/pypi/afwf_fts_anything
-
 .. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
     :target: https://github.com/MacHu-GWU/afwf_fts_anything-project
 
 ------
 
-
 .. image:: https://img.shields.io/badge/Link-Document-blue.svg
-      :target: https://afwf_fts_anything.readthedocs.io/index.html
-
-.. image:: https://img.shields.io/badge/Link-API-blue.svg
-      :target: https://afwf_fts_anything.readthedocs.io/py-modindex.html
-
-.. image:: https://img.shields.io/badge/Link-Source_Code-blue.svg
-      :target: https://afwf_fts_anything.readthedocs.io/py-modindex.html
+      :target: https://github.com/MacHu-GWU/afwf_fts_anything-project
 
 .. image:: https://img.shields.io/badge/Link-Install-blue.svg
       :target: `install`_
@@ -46,7 +26,7 @@
       :target: https://github.com/MacHu-GWU/afwf_fts_anything-project/issues
 
 .. image:: https://img.shields.io/badge/Link-Download-blue.svg
-      :target: https://pypi.org/pypi/afwf_fts_anything#files
+      :target: https://github.com/MacHu-GWU/afwf_fts_anything-project/releases
 
 
 The Alfred Workflow: Full Text Search Anything
@@ -117,8 +97,14 @@ Search Setting (content of ``movie-setting.json``):
     }
 
 
-Installation
+Note: ``fts.anything`` support comment in json.
+
+
+.. _install:
+
+Install
 ------------------------------------------------------------------------------
+Go to `Release <https://github.com/MacHu-GWU/afwf_fts_anything-project/releases>`_, download the latest ``Full-Text-Search-Anything.alfredworkflow``. And double click to install to alfred.
 
 
 Usage
@@ -172,7 +158,7 @@ It is a dictonary with 6 fields:
                 "type_is_keyword": true
             }
         ],
-        "title_field": "title", // title on Alfred drop down menu
+        "title_field": "{title} ({genres})", // title on Alfred drop down menu
         "subtitle_field": "description", // subtitle on Alfred drop down menu
         "arg_field": "movie_id", // argument for other workflow component
         "autocomplete_field": "{movie_id} - {title}", // tab auto complete behavior
@@ -210,7 +196,7 @@ column setting template:
 
 ``title_field``, ``subtitle_field``, ``arg_field``, ``autocomplete_field``, ``icon_field`` defines how you want to construct drop down items. By default, everything is None. Let's use ``title_field`` as an example:
 
-1. if ``title_field`` is not defined, use the ``"title"`` field in record, this **will raise error** if ``"title"`` field not exist.
+1. if ``title_field`` is not defined, use the ``"title"`` field in the record, this **will raise error** if ``"title"`` field not exist.
 2. if ``title_field`` is a string, let's say it is ``"movie_title"``, test if it is one of columns fields, if true, then use that field (``"movie_title"``)for title.
 3. if ``title_field`` is a str, but not in columns fields, it must be a `Python String Format Template <https://docs.python.org/3/library/string.html#format-examples>`_. For example: ``{movie_id} - {title}``.
 
@@ -220,3 +206,6 @@ FAQ
 
 - Q: Why use json, why not CSV?
 - A: json provides more flexibility and compatible with multi-line text, which CSV usually not.
+
+- Q: Why it still returns old data after I updated the dataset?
+- A: Just delete the ``${HOME}/.alfred-fts/<dataname>-whoosh_index`` directory.

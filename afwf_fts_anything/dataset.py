@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import attr
+import shutil
 from attrs_mate import AttrsClass
 from whoosh import index, qparser
 from pathlib_mate import PathCls as Path
@@ -37,13 +38,15 @@ class DataSet(AttrsClass):
         if self.data is None:
             data_file = self.get_data_file_path()
             with open(data_file.abspath, "rb") as f:
-                self.data = json.loads(f.read().decode("utf-8"), ignore_comments=True)
+                self.data = json.loads(f.read().decode(
+                    "utf-8"), ignore_comments=True)
 
     def update_setting_from_file(self):
         if not self.setting.columns:
             setting_file = self.get_setting_file_path()
             with open(setting_file.abspath, "rb") as f:
-                setting_data = json.loads(f.read().decode("utf-8"), ignore_comments=True)
+                setting_data = json.loads(
+                    f.read().decode("utf-8"), ignore_comments=True)
                 self.setting = Setting(**setting_data)
 
     def get_data_file_path(self):
@@ -81,6 +84,12 @@ class DataSet(AttrsClass):
             writer.add_document(**doc)
         writer.commit()
 
+    def remove_index(self):
+        """
+        Remove whoosh index dir.
+        """
+        shutil.rmtree(self.get_index_dir_path().abspath)
+
     def search(self, query_str, limit=20):
         """
         Use full text search for result.
@@ -92,5 +101,6 @@ class DataSet(AttrsClass):
             schema=schema,
         ).parse(query_str)
         with idx.searcher() as searcher:
-            result = [hit.fields() for hit in searcher.search(query, limit=limit)]
+            result = [hit.fields()
+                      for hit in searcher.search(query, limit=limit)]
         return result

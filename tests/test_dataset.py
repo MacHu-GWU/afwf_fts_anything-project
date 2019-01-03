@@ -61,7 +61,8 @@ class TestMovieDataset(object):
         cls.data = movie_data
         cls.setting = movie_setting
 
-        dataset = DataSet(name=dataset_name, data=None, setting=Setting(skip_post_init=True))
+        dataset = DataSet(name=dataset_name, data=None,
+                          setting=Setting(skip_post_init=True))
         data_file_path = dataset.get_data_file_path()
         setting_file_path = dataset.get_setting_file_path()
         index_dir = dataset.get_index_dir_path()

@@ -29,7 +29,8 @@ class ColumnSetting(AttrsClass):
     keyword_commas = attr.ib(default=True)
 
     def __attrs_post_init__(self):
-        flag = self.type_is_store + self.type_is_ngram + self.type_is_phrase + self.type_is_keyword
+        flag = self.type_is_store + self.type_is_ngram + \
+            self.type_is_phrase + self.type_is_keyword
         if flag == 1:
             pass
         elif flag < 1:
@@ -151,7 +152,8 @@ class Setting(AttrsClass):
         """
         # whoosh 所返回的 doc 中并不一定所有项都有, 有的项可能没有, 我们先为这些
         # 没有的项赋值 None
-        doc = {c_setting.name: doc.get(c_setting.name) for c_setting in self.columns}
+        doc = {c_setting.name: doc.get(c_setting.name)
+               for c_setting in self.columns}
         item_data = dict()
 
         # find corresponding value for every workflow item field
