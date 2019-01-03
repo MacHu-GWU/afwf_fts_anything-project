@@ -24,17 +24,40 @@ class TestSearch(object):
 
     def test_found(self):
         wf = Workflow3()
-        main(wf, args=["movie", "Godfather"])
+        main(wf, args=["movie", "redemption"])
+        assert len(wf._items) == 1
+        for item in wf._items:
+            print(item.title)
+
+        wf = Workflow3()
+        main(wf, args=["movie", "godfather"])
         assert len(wf._items) == 2
         for item in wf._items:
             print(item.title)
 
-    # def test_temp(self):
-    #     wf = Workflow3()
-    #     main(wf, args=["d2skills", "sor"])
-    #     for item in wf._items:
-    #         print(item.title)
-    #         print(item.subtitle)
+        wf = Workflow3()
+        main(wf, args=["movie", "empire"])
+        assert len(wf._items) == 1
+        for item in wf._items:
+            print(item.title)
+
+        wf = Workflow3()
+        main(wf, args=["movie", "family"])
+        assert len(wf._items) == 1
+        for item in wf._items:
+            print(item.title)
+
+        wf = Workflow3()
+        main(wf, args=["movie", "crime"])
+        assert len(wf._items) == 2
+        for item in wf._items:
+            print(item.title)
+
+        wf = Workflow3()
+        main(wf, args=["movie", "drama"])
+        assert len(wf._items) == 3
+        for item in wf._items:
+            print(item.title)
 
 
 if __name__ == "__main__":

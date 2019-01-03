@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import json
 import attr
 from attrs_mate import AttrsClass
 from whoosh import index, qparser
 from pathlib_mate import PathCls as Path
-
+from superjson import json
 from .constant import ALFRED_FTS
 from .fts_setting import Setting
 
@@ -38,13 +37,13 @@ class DataSet(AttrsClass):
         if self.data is None:
             data_file = self.get_data_file_path()
             with open(data_file.abspath, "rb") as f:
-                self.data = json.loads(f.read().decode("utf-8"))
+                self.data = json.loads(f.read().decode("utf-8"), ignore_comments=True)
 
     def update_setting_from_file(self):
         if not self.setting.columns:
             setting_file = self.get_setting_file_path()
             with open(setting_file.abspath, "rb") as f:
-                setting_data = json.loads(f.read().decode("utf-8"))
+                setting_data = json.loads(f.read().decode("utf-8"), ignore_comments=True)
                 self.setting = Setting(**setting_data)
 
     def get_data_file_path(self):

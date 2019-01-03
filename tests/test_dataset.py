@@ -5,7 +5,7 @@ import pytest
 
 import shutil
 from pathlib_mate import PathCls as Path
-from afwf_fts_anything.helpers import dump_json
+from superjson import json
 from afwf_fts_anything.dataset import DataSet, Setting, ALFRED_FTS
 
 
@@ -23,10 +23,10 @@ class TestMovieDataset(object):
                  genres="Drama"),
             dict(movie_id=2, title="The Godfather",
                  description="The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-                 genres="Crime,Drama"),
+                 genres="Crime, Drama"),
             dict(movie_id=3, title="The Godfather: Part II",
                  description="The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate.",
-                 genres="Crime,Drama"),
+                 genres="Crime, Drama"),
         ]
         movie_setting_data = {
             "columns": [
@@ -50,7 +50,7 @@ class TestMovieDataset(object):
                     "keyword_lowercase": True,
                 },
             ],
-            "title_field": "title",
+            "title_field": "{title} ({genres})",
             "subtitle_field": "description",
             "arg_field": "movie_id",
             "autocomplete_field": "{movie_id} - {title}",
@@ -67,8 +67,10 @@ class TestMovieDataset(object):
         index_dir = dataset.get_index_dir_path()
         if index_dir.exists():
             shutil.rmtree(index_dir.abspath)
-        dump_json(movie_data, data_file_path.abspath)
-        dump_json(movie_setting_data, setting_file_path.abspath)
+        json.dump(movie_data, data_file_path.abspath,
+                  indent=4, sort_keys=True, ensure_ascii=False, overwrite=True, verbose=False)
+        json.dump(movie_setting_data, setting_file_path.abspath,
+                  indent=4, sort_keys=True, ensure_ascii=False, overwrite=True, verbose=False)
 
     def test_search(self):
         dataset = DataSet(
@@ -84,6 +86,18 @@ class TestMovieDataset(object):
 
         result = dataset.search("godfather")
         assert len(result) == 2
+
+        result = dataset.search("empire")
+        assert len(result) == 1
+
+        result = dataset.search("family")
+        assert len(result) == 1
+
+        result = dataset.search("crime")
+        assert len(result) == 2
+
+        result = dataset.search("drama")
+        assert len(result) == 3
 
 
 if __name__ == "__main__":
