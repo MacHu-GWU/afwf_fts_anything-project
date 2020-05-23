@@ -4,9 +4,11 @@ Release and Version History
 ==============================================================================
 
 
-0.0.2 (2019-01-02)
+0.0.2 (2020-05-23)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
+
+- Allow column specified index search settings
 
 **Minor Improvements**
 
@@ -19,3 +21,4 @@ Release and Version History
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - First release
+- Allow ngram, phrase, keyword index everything
