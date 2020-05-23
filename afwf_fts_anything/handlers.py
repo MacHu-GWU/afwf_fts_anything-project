@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+This is alfred workflow integration layer.
+"""
+
 from __future__ import unicode_literals
 from .dataset import DataSet
 from .icons import ICON_NOT_FOUND

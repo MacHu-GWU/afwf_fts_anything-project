@@ -36,6 +36,7 @@ The Alfred Workflow: Full Text Search Anything
     :local:
     :depth: 1
 
+
 .. _introduction:
 
 Introduction
@@ -101,22 +102,22 @@ Search Setting (content of ``movie-setting.json``):
         "title_field": "{title} ({genres})", // title on Alfred drop down menu
         "subtitle_field": "description", // subtitle on Alfred drop down menu
         "arg_field": "movie_id", // argument for other workflow component
-        "autocomplete_field": "{movie_id} - {title}", // tab auto complete behavior
+        "autocomplete_field": "{title}", // tab auto complete behavior
         "icon_field": "/Users/<username>/.alfred-fts/movie-icon.png"
     }
 
 
-Note: ``fts.anything`` support comment in json.
+Note: ``fts.anything`` support comments in json.
 
 
 .. _install:
 
-Install
+1. Install ``alfred-fts``
 ------------------------------------------------------------------------------
 Go to `Release <https://github.com/MacHu-GWU/afwf_fts_anything-project/releases>`_, download the latest ``Full-Text-Search-Anything.alfredworkflow``. And double click to install to alfred.
 
 
-Usage Guide
+2. Configure Alfred Workflow Settings
 ------------------------------------------------------------------------------
 
 1. Create an ``.alfred-fts`` directory in your ``${HOME}`` dir (``/Users/<username>``). This is where you put your dataset file and setting file.
@@ -131,7 +132,7 @@ Usage Guide
 .. image:: https://user-images.githubusercontent.com/6800411/50622685-41710d00-0edd-11e9-9ac9-c904ed0bfd4f.png
 
 
-FTS Anything Setting File
+3. Configure Dataset and Setting File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is a dictonary with 6 fields:
@@ -170,7 +171,7 @@ It is a dictonary with 6 fields:
         "title_field": "{title} ({genres})", // title on Alfred drop down menu
         "subtitle_field": "description", // subtitle on Alfred drop down menu
         "arg_field": "movie_id", // argument for other workflow component
-        "autocomplete_field": "{movie_id} - {title}", // tab auto complete behavior
+        "autocomplete_field": "{title}", // tab auto complete behavior
         "icon_field": "/Users/<username>/.alfred-fts/movie-icon.png"
     }
 
@@ -218,3 +219,33 @@ FAQ
 
 - Q: Why it still returns old data after I updated the dataset?
 - A: Just delete the ``${HOME}/.alfred-fts/<dataname>-whoosh_index`` directory.
+
+
+Projects based on ``alfred-fts``
+------------------------------------------------------------------------------
+
+- search AWS CloudFormation Resource and Property Reference, quickly jump to Official AWS CloudFormation Resource and Property Document: https://github.com/MacHu-GWU/alfred-cloudformation-resource-property-ref
+- search Terraform AWS Resource Reference, quickly jump to Official Terraform AWS Resource Document: https://github.com/MacHu-GWU/alfred-terraform-resource-property-ref
+
+
+Developer Guide
+------------------------------------------------------------------------------
+
+
+How to Develop this library
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First you need to prepare the data file ``${HOME}/.alfred-tfs/movie.json`` and ``${HOME}/.alfred-tfs/movie-setting.json``.
+
+Then use ``tests/test_handlers.py`` to implement test cases for input argument, returned items.
+
+
+How to Release new version of Alfred Workflow using this library
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Run ``build.sh``, Workflow artifacts will be packed into ``afwf_fts_anything-project/workflow/``
+2. Create a Empty Workflows.
+3. Right Click on this Workflow, Click "Open in Finder".
+4. Copy all content from workflow into the folder.
+5. Right Click on this Workflow, Click "Export", it will be export to ``Full Text Search Anything.alfredworkflow`` file.
+6. Issue a new GitHub Release, and upload the ``Full Text Search Anything.alfredworkflow``.

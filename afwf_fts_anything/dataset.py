@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module is an integration layer put full-text-search-settings, dataset,
+whoosh schema all together.
+"""
+
 import attr
 import shutil
 from attrs_mate import AttrsClass

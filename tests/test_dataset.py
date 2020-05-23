@@ -53,8 +53,8 @@ class TestMovieDataset(object):
             "title_field": "{title} ({genres})",
             "subtitle_field": "description",
             "arg_field": "movie_id",
-            "autocomplete_field": "{movie_id} - {title}",
-            "icon_field": Path(ALFRED_FTS, "movie-icon.png").abspath,
+            "autocomplete_field": "{title}",
+            "icon_field": str(Path(ALFRED_FTS, "movie-icon.png").abspath),
         }
         movie_setting = Setting.from_dict(movie_setting_data)
         cls.dataset_name = dataset_name
@@ -68,10 +68,18 @@ class TestMovieDataset(object):
         index_dir = dataset.get_index_dir_path()
         if index_dir.exists():
             shutil.rmtree(index_dir.abspath)
-        json.dump(movie_data, data_file_path.abspath,
-                  indent=4, sort_keys=True, ensure_ascii=False, overwrite=True, verbose=False)
-        json.dump(movie_setting_data, setting_file_path.abspath,
-                  indent=4, sort_keys=True, ensure_ascii=False, overwrite=True, verbose=False)
+        json.dump(
+            movie_data,
+            data_file_path.abspath,
+            indent=4, sort_keys=True, ensure_ascii=False, overwrite=True,
+            verbose=False
+        )
+        json.dump(
+            movie_setting_data,
+            setting_file_path.abspath,
+            indent=4, sort_keys=True, ensure_ascii=False, overwrite=True,
+            verbose=False
+        )
 
     def test_search(self):
         dataset = DataSet(

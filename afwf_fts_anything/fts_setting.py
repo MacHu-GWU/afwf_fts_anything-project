@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module implements the abstraction of the dataset settings, and convert the
+settings towhoosh.fields.SchemaClass.
+"""
+
 import six
 import attr
 from collections import OrderedDict
@@ -12,6 +17,19 @@ from .workflow_item import WFItem, ITEM_ATTRS
 @attr.s
 class ColumnSetting(AttrsClass):
     """
+    Per Column Setting.
+
+    :param type_is_store: if True, the value is only stored but not indexed for
+        search. Usually it can be used to dynamically construct value for argument
+        (the action when you press enter), or for auto complete (the action
+        when you press tab)
+    :param type_is_ngram: if True, the value is index using ngram. It matches
+        any character shorter than N characters.
+        https://whoosh.readthedocs.io/en/latest/ngrams.html.
+    :param type_is_phrase: if True, the value is indexed using phrase. Only
+        case insensitive phrase will be matched.
+    :param type_is_keyword: if True, the value is indexed using keyword. The
+        keyword has to be exactly matched.
     :param ngram_minsize: minimal number of character to match., default 2.
     :param ngram_maxsize: maximum number of character to match., default 10.
     :param keyword_lowercase: for keyword type field, is the match case sensitive?
@@ -46,7 +64,8 @@ class Setting(AttrsClass):
     """
     Defines how you want to index your dataset
 
-    :param title_field: which field is used as ``WorkflowItem.title``.
+    :param title_field: which field is used as ``WorkflowItem.title``. It displays
+        as the big title in alfred drop down menu.
     :param subtitle_field: which field is used as ``WorkflowItem.subtitle``.
     :param arg_field: which field is used as ``WorkflowItem.arg``.
     :param autocomplete_field: which field is used as ``WorkflowItem.autocomplete``.
@@ -54,7 +73,6 @@ class Setting(AttrsClass):
 
     :param skip_post_init: implementation reserved attribute.
     :param _searchable_columns_cache: implementation reserved attribute.
-
     """
     columns = attr.ib(
         factory=list, converter=lambda columns: [
@@ -97,6 +115,10 @@ class Setting(AttrsClass):
 
     @property
     def searchable_columns(self):
+        """
+
+        :return:
+        """
         if self._searchable_columns_cache is None:
             self._searchable_columns_cache = list()
             self._searchable_columns_cache.extend(self.ngram_columns)
@@ -106,11 +128,19 @@ class Setting(AttrsClass):
 
     @property
     def column_names(self):
+        """
+
+        :rtype: List[str]
+        """
         return [c_setting.name for c_setting in self.columns]
 
     def create_whoosh_schema(self):
         """
-        Dynamically create whoosh schema.
+        Dynamically create whoosh.fields.SchemaClass schema object.
+
+        It defines how you index your dataset.
+
+        :rtype: SchemaClass
         """
         schema_classname = "WhooshSchema"
         schema_classname = str(schema_classname)
@@ -134,13 +164,12 @@ class Setting(AttrsClass):
                 field = fields.STORED()
             attrs[c_setting.name] = field
         SchemaClass = type(schema_classname, (fields.SchemaClass,), attrs)
-        schema = SchemaClass()
+        schema = SchemaClass() # type: SchemaClass
         return schema
 
     def convert_to_item(self, doc):
         """
-
-        By default into schedule
+        Convert dict data to ``WFItem``
 
         for title, subtitle, arg, autocomplete field:
 
@@ -149,6 +178,10 @@ class Setting(AttrsClass):
             use that field.
         3. if ``setting.title_field`` is a str, and not in any columns fields,
             it must be Python String Format Template.
+
+        :type doc: dict
+
+        :rtype: WFItem
         """
         # whoosh 所返回的 doc 中并不一定所有项都有, 有的项可能没有, 我们先为这些
         # 没有的项赋值 None
