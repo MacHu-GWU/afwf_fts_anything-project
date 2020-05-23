@@ -133,7 +133,7 @@ Go to `Release <https://github.com/MacHu-GWU/afwf_fts_anything-project/releases>
 
 
 3. Configure Dataset and Setting File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------------------------------------------------
 
 It is a dictonary with 6 fields:
 
