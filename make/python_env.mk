@@ -75,7 +75,7 @@ TEST_PY_VER4="3.5.3"
 TEST_PY_VER5="3.6.2"
 
 # If you use pyenv-virtualenv, set to "Y"
-USE_PYENV="Y"
+USE_PYENV="N"
 
 # S3 Bucket Name
 DOC_HOST_BUCKET_NAME="NoBucket"
