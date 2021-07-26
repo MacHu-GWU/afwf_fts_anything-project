@@ -1,8 +1,11 @@
 # User Settings
-afwf_fts_anything_venv/
 afwf_fts_anything.egg-info/
 afwf_fts_anything-*/
+venv/
 workflow/
+lib/
+wf-input.json
+wf-output.json
 
 
 # Byte-compiled / optimized / DLL files
