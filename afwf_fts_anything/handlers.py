@@ -11,15 +11,14 @@ from .icons import ICON_NOT_FOUND
 MSG_FOUND_NOTHING = "Found Nothing"
 
 
-def main(wf, args=None):
+def handler(wf, args=None):
     if args is None:
         args = wf.args
     n_args = len(args)
 
+    # no way it hit this if invoke from alfred, first arg is always the data set name
     if n_args == 0:
-        wf.add_item(
-
-        )
+        pass
 
     elif n_args == 1:
         dataset_name = args[0]

@@ -64,69 +64,69 @@ content of ``$HOME/.alfred-fts/movie-setting.json``:
 
 import pytest
 from workflow import Workflow3
-from afwf_fts_anything.handlers import main
+from afwf_fts_anything.handlers import handler
 from afwf_fts_anything.handlers import MSG_FOUND_NOTHING
 
 
 class TestSearch(object):
     def test_no_argument(self):
         wf = Workflow3()
-        main(wf, args=["movie"])
+        handler(wf, args=["movie"])
         assert len(wf._items) == 1
         item = wf._items[0]
         assert "Search in Dataset" in item.title
 
     def test_found_nothing(self):
         wf = Workflow3()
-        main(wf, args=["movie", "YouCanNotFindMe"])
+        handler(wf, args=["movie", "YouCanNotFindMe"])
         assert len(wf._items) == 1
         item = wf._items[0]
         assert item.title == MSG_FOUND_NOTHING
 
     def test_found(self):
         wf = Workflow3()
-        main(wf, args=["movie", "redempt"]) # match the ngram 'title' field
+        handler(wf, args=["movie", "redempt"]) # match the ngram 'title' field
         assert len(wf._items) == 1
         assert wf._items[0].title == "The Shawshank Redemption (Drama)"
         assert wf._items[0].arg == "1"
         assert wf._items[0].autocomplete == "The Shawshank Redemption"
 
         wf = Workflow3()
-        main(wf, args=["movie", "father"]) # match the ngram 'title' field
+        handler(wf, args=["movie", "father"]) # match the ngram 'title' field
         assert len(wf._items) == 2
         for item in wf._items:
             assert "The Godfather" in item.title
 
         wf = Workflow3()
-        main(wf, args=["movie", "EMPIRE"]) # match the phrase 'descrpition' field
+        handler(wf, args=["movie", "EMPIRE"]) # match the phrase 'descrpition' field
         assert len(wf._items) == 1
         assert wf._items[0].title == "The Godfather (Crime, Drama)"
 
         wf = Workflow3()
-        main(wf, args=["movie", "transfers", "control"])  # match the phrase 'descrpition' field
+        handler(wf, args=["movie", "transfers", "control"])  # match the phrase 'descrpition' field
         assert len(wf._items) == 1
         assert wf._items[0].title == "The Godfather (Crime, Drama)"
         assert wf._items[0].arg == "2"
         assert wf._items[0].autocomplete == "The Godfather"
 
         wf = Workflow3()
-        main(wf, args=["movie", "empi"])  # match the phrase 'descrpition' field
+        handler(wf, args=["movie", "empi"])  # match the phrase 'descrpition' field
         assert len(wf._items) == 1
         assert wf._items[0].title == "Found Nothing"
 
         wf = Workflow3()
-        main(wf, args=["movie", "family"])  # match the phrase 'descrpition' field
+        handler(wf, args=["movie", "family"])  # match the phrase 'descrpition' field
         assert len(wf._items) == 1
         assert wf._items[0].title == "The Godfather: Part II (Crime, Drama)"
 
         wf = Workflow3()
-        main(wf, args=["movie", "Drama", "Crime"])  # match the keyword 'genres' field
+        handler(wf, args=["movie", "Drama", "Crime"])  # match the keyword 'genres' field
         assert len(wf._items) == 2
         for item in wf._items:
             assert "The Godfather" in item.title
 
         wf = Workflow3()
-        main(wf, args=["movie", "drama"])
+        handler(wf, args=["movie", "drama"])
         assert len(wf._items) == 3
 
 

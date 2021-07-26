@@ -4,7 +4,8 @@
 Full text search workflow for Alfred.
 """
 
-__version__ = "0.0.2"
+from ._version import __version__
+
 __short_description__ = "Full text search workflow for Alfred."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"

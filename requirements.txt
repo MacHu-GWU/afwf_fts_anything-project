@@ -1,6 +1,10 @@
-Alfred-Workflow
 whoosh==2.7.4
-pathlib_mate==0.0.14
-attrs_mate==0.0.2
-attrs==18.2.0
-superjson==0.0.10
+pathlib_mate==1.0.1
+attrs==20.3.0
+attrs_mate==0.0.5
+superjson==0.0.13
+atomicwrites==1.4.0
+pycodestyle==2.6.0
+autopep8==1.4.4
+scandir==1.10.0
+toml==0.10.2
