@@ -232,17 +232,14 @@ Developer Guide
 How to Develop this library
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First you need to prepare the data file ``${HOME}/.alfred-tfs/movie.json`` and ``${HOME}/.alfred-tfs/movie-setting.json``.
-
-Then use ``tests/test_handlers.py`` to implement test cases for input argument, returned items.
+I wrote an article that describes the best practice developing Alfred Workflow in python https://github.com/MacHu-GWU/alfred-workflow-in-python-tutorial. This repo is based on that best practice.
 
 
-How to Release new version of Alfred Workflow using this library
+How to Release new version of afwf_fts_anything
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. Run ``build.sh``, Workflow artifacts will be packed into ``afwf_fts_anything-project/workflow/``
-2. Create a Empty Workflows.
-3. Right Click on this Workflow, Click "Open in Finder".
-4. Copy all content from workflow into the folder.
-5. Right Click on this Workflow, Click "Export", it will be export to ``Full Text Search Anything.alfredworkflow`` file.
-6. Issue a new GitHub Release, and upload the ``Full Text Search Anything.alfredworkflow``.
+1. Create an Empty Alfred Workflow, copy and paste the movie dataset and configure the ``Script Filter`` Input as above.
+2. Right click on Workflow, click Open in finder, copy the full path of the directory, it should be like something ``/path-to/Alfred.alfredpreferences/workflows/user.workflow.12345678-ABCD-1234-ABCD-12345678ABCD``
+3. Run ``bash ./bin/build-wf.sh``, Workflow artifacts will be packed into it.
+4. Right Click on this Workflow, Click "Export", it will be export to ``Full Text Search Anything.alfredworkflow`` file.
+5. Issue a new GitHub Release, and upload the ``Full Text Search Anything.alfredworkflow``.
