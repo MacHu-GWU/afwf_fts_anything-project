@@ -1,0 +1,40 @@
+# comprehensive github action yml reference: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+
+---
+name: CI
+
+on:
+  push: # any push event to master will trigger this
+    branches: ["master"]
+  pull_request: # any pull request to master will trigger this
+    branches: ["master"]
+  workflow_dispatch: # allows you to manually trigger run
+
+jobs:
+  tests:
+    name: "${{ matrix.os }} Python ${{ matrix.python-version }}"
+    runs-on: "${{ matrix.os }}" # for all available VM runtime, see this: https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners
+    strategy:
+      matrix:
+        os: ["ubuntu-latest",]
+#        os: ["ubuntu-latest", ] # for debug only
+        python-version: ["2.7", ]
+    steps:
+      - uses: "actions/checkout@v2" # https://github.com/marketplace/actions/checkout
+      - uses: "actions/setup-python@v2" # https://github.com/marketplace/actions/setup-python
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: "Install dependencies on Linux"
+        run: |
+          set -xe
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel virtualenv codecov
+          pip install -r requirements.txt
+          pip install -r requirements-alfred-workflow.txt
+          pip install -r requirements-test.txt
+          pip install .
+
+      - name: "Run pytest"
+        run: "python -m pytest tests"
