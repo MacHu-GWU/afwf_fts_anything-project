@@ -14,6 +14,7 @@ MSG_FOUND_NOTHING = "Found Nothing"
 def handler(wf, args=None):
     if args is None:
         args = wf.args
+
     n_args = len(args)
 
     # no way it hit this if invoke from alfred, first arg is always the data set name
@@ -51,7 +52,7 @@ def handler(wf, args=None):
             except Exception as e:
                 dataset.remove_index()
                 wf.add_item(
-                    title="{}.json format is broken!".format(dataset_name),
+                    title="{}.json format is broken! Error: {}".format(dataset_name, str(e)),
                     subtitle="please check for unexpected trailing comma!",
                     valid=True,
                 )
