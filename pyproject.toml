@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "afwf_fts_anything"
+version = "1.1.1"
+description = "Alfred Workflow, Full Text Search Anything"
+authors = ["Sanhe Hu <husanhe@gmail.com>"]
+
+
+[tool.poetry.dependencies]
+python = "3.8.*"
+afwf = "0.2.2"
+attrs = "21.4.0"
+attrs_mate = "1.0.2"
+pathlib_mate = " 1.2.1"
+diskcache = "5.4.0"
+sqlitedict = "2.1.0"
+python-Levenshtein = "0.20.9"
+fuzzywuzzy = "0.18.0"
+whoosh = "2.7.4"
+superjson = "1.0.2"
+
+
+[tool.poetry.dev-dependencies]
+# Don't put anything here, explicit is better than implicit
+
+
+[tool.poetry.group.dev]
+optional = true
+
+
+[tool.poetry.group.dev.dependencies]
+twine = "3.8.0"
+wheel = "0.37.1"
+rich = "12.5.1"
+fire = "0.5.0"
+
+
+[tool.poetry.group.doc]
+optional = true
+
+
+[tool.poetry.group.doc.dependencies]
+Sphinx = "4.3.0"
+sphinx-jinja = "1.1.1"
+rstobj = "1.2.1"
+docfly = "1.0.2"
+furo = "2021.8.31"
+sphinx-inline-tabs = "2021.8.17b10"
+
+
+[tool.poetry.group.test]
+optional = true
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "6.2.5"
+pytest-cov = "2.12.1"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
