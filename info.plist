@@ -6,19 +6,6 @@
 	<string>MacHu-GWU.afwf_fts_anything</string>
 	<key>connections</key>
 	<dict>
-		<key>11974DBE-22DC-481A-B5E7-0DE58B609311</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>27D78147-51C3-4E72-B805-0E11B1F3A6D8</key>
 		<array>
 			<dict>
@@ -57,19 +44,6 @@
 				<false/>
 			</dict>
 		</array>
-		<key>7E399DB8-9A1C-43FD-997B-8C5F4F08E117</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>92ADA757-06DC-428F-AA48-7C16FD4BE487</key>
 		<array>
 			<dict>
@@ -81,32 +55,6 @@
 				<string></string>
 				<key>sourceoutputuid</key>
 				<string>5EA742F9-1BBA-4433-8613-BFBFF0D0E462</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>D68CAE72-05CC-4A3A-BF4D-8383A3691304</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>FA69550D-63C4-49FE-9496-679E2E4BFA4D</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -219,55 +167,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<false/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>69</integer>
-				<key>keyword</key>
-				<string>tf</string>
-				<key>queuedelaycustom</key>
-				<integer>3</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>2</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string></string>
-				<key>script</key>
-				<string>~/.pyenv/shims/python2.7 main.py terraform {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>subtext</key>
-				<string>Keyword: tf</string>
-				<key>title</key>
-				<string>Full Text Search for Terraform AWS Document</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>7E399DB8-9A1C-43FD-997B-8C5F4F08E117</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>path</key>
 				<string>{var:reveal_file_in_finder_path}</string>
 			</dict>
@@ -311,153 +210,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<false/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>69</integer>
-				<key>keyword</key>
-				<string>cf</string>
-				<key>queuedelaycustom</key>
-				<integer>3</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>2</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string></string>
-				<key>script</key>
-				<string>~/.pyenv/shims/python2.7 main.py cloudformation {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>subtext</key>
-				<string>Keyword: cf</string>
-				<key>title</key>
-				<string>Full Text Search for AWS CloudFormation Document</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>D68CAE72-05CC-4A3A-BF4D-8383A3691304</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<false/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>69</integer>
-				<key>keyword</key>
-				<string>pyspark</string>
-				<key>queuedelaycustom</key>
-				<integer>3</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>2</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string></string>
-				<key>script</key>
-				<string>~/.pyenv/shims/python2.7 main.py pyspark_api_ref {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>subtext</key>
-				<string>Keyword: pyspark</string>
-				<key>title</key>
-				<string>Full Text Search for PySpark API Reference</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>11974DBE-22DC-481A-B5E7-0DE58B609311</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<false/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>69</integer>
-				<key>keyword</key>
-				<string>boto3</string>
-				<key>queuedelaycustom</key>
-				<integer>3</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>2</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string></string>
-				<key>script</key>
-				<string>~/.pyenv/shims/python2.7 main.py boto3 {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>subtext</key>
-				<string>Keyword: boto3</string>
-				<key>title</key>
-				<string>Full Text Search for Boto3 API Reference</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>FA69550D-63C4-49FE-9496-679E2E4BFA4D</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>browser</key>
 				<string></string>
 				<key>spaces</key>
@@ -484,70 +236,42 @@
 			<key>xpos</key>
 			<integer>740</integer>
 			<key>ypos</key>
-			<integer>145</integer>
+			<integer>150</integer>
 		</dict>
 		<key>0954010F-CD86-448F-A32A-086CF90100D2</key>
 		<dict>
 			<key>xpos</key>
 			<integer>740</integer>
 			<key>ypos</key>
-			<integer>40</integer>
-		</dict>
-		<key>11974DBE-22DC-481A-B5E7-0DE58B609311</key>
-		<dict>
-			<key>xpos</key>
-			<integer>70</integer>
-			<key>ypos</key>
-			<integer>355</integer>
+			<integer>45</integer>
 		</dict>
 		<key>27D78147-51C3-4E72-B805-0E11B1F3A6D8</key>
 		<dict>
 			<key>xpos</key>
 			<integer>585</integer>
 			<key>ypos</key>
-			<integer>60</integer>
+			<integer>65</integer>
 		</dict>
 		<key>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</key>
 		<dict>
 			<key>xpos</key>
-			<integer>750</integer>
+			<integer>740</integer>
 			<key>ypos</key>
-			<integer>460</integer>
+			<integer>255</integer>
 		</dict>
 		<key>55DEB335-2FC6-4FF9-8482-F949B27BFEE9</key>
 		<dict>
 			<key>xpos</key>
-			<integer>70</integer>
+			<integer>30</integer>
 			<key>ypos</key>
-			<integer>40</integer>
-		</dict>
-		<key>7E399DB8-9A1C-43FD-997B-8C5F4F08E117</key>
-		<dict>
-			<key>xpos</key>
-			<integer>70</integer>
-			<key>ypos</key>
-			<integer>145</integer>
+			<integer>45</integer>
 		</dict>
 		<key>92ADA757-06DC-428F-AA48-7C16FD4BE487</key>
 		<dict>
 			<key>xpos</key>
 			<integer>585</integer>
 			<key>ypos</key>
-			<integer>165</integer>
-		</dict>
-		<key>D68CAE72-05CC-4A3A-BF4D-8383A3691304</key>
-		<dict>
-			<key>xpos</key>
-			<integer>70</integer>
-			<key>ypos</key>
-			<integer>250</integer>
-		</dict>
-		<key>FA69550D-63C4-49FE-9496-679E2E4BFA4D</key>
-		<dict>
-			<key>xpos</key>
-			<integer>70</integer>
-			<key>ypos</key>
-			<integer>460</integer>
+			<integer>170</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>
