@@ -31,14 +31,14 @@ jobs:
           set -xe
           python -VV
           python -m site
-          python -m pip install --upgrade pip virtualenv
-          python -m pip install -r requirements-automation.txt
-          make venv-create
-          make install-all
+          python -m pip install --upgrade pip setuptools wheel virtualenv codecov
+          pip install -r requirements.txt
+          pip install -r requirements-alfred-workflow.txt
+          pip install -r requirements-test.txt
+          pip install .
 
       - name: "Run pytest"
-        run: |
-          make cov
+        run: "python -m pytest tests --cov=afwf_fts_anything"
 
       - name: "Upload coverage to Codecov"
         if: "contains(env.USING_COVERAGE, matrix.python-version)"

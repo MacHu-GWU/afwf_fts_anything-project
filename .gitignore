@@ -3,11 +3,6 @@ afwf_fts_anything.egg-info/
 afwf_fts_anything-*/
 tmp/
 
-requirements-main.txt
-requirements-dev.txt
-requirements-test.txt
-requirements-doc.txt
-
 .poetry-lock-hash.json
 .current-env-name.json
 
