@@ -43,6 +43,7 @@ class TestSetting:
         schema = setting.create_whoosh_schema()
         assert len(setting.store_fields) == 4
         assert len(setting.searchable_fields) == 3
+        assert len(setting.sortable_fields) == 0
 
         setting = Setting.from_dict(
             {

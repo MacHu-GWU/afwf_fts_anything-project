@@ -202,6 +202,10 @@ class Setting(AttrsClass):
     def searchable_fields(self) -> T.List[str]:
         return self.ngram_fields + self.phrase_fields + self.keyword_fields
 
+    @cached_property
+    def sortable_fields(self) -> T.List[str]:
+        return [field.name for field in self.fields if field.is_sortable]
+
     @property
     def field_names(self) -> T.List[str]:
         return [field.name for field in self.fields]
