@@ -114,9 +114,6 @@ class Setting(AttrsClass):
     autocomplete_field: T.Optional[str] = AttrsClass.ib_str(default=None)
     icon_field: T.Optional[str] = AttrsClass.ib_str(default=None)
 
-    # key: T.Optional[str] = AttrsClass.ib_str(default=None)
-    # group: T.Optional[str] = AttrsClass.ib_str(default=None)
-
     data_url: T.Optional[str] = AttrsClass.ib_str(default=None)
 
     skip_post_init = attr.ib(default=False)
@@ -303,6 +300,14 @@ class Setting(AttrsClass):
             return data.get("autocomplete")
         else:
             return self.autocomplete_field.format(**data)
+
+    def format_icon(
+        self, data: T.Dict[str, T.Any]
+    ) -> T.Optional[str]:  # pragma: no cover
+        if self.icon_field is None:
+            return data.get("icon")
+        else:
+            return self.icon_field.format(**data)
 
     # def convert_to_item(self, doc):
     #     """

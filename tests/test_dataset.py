@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from afwf_fts_anything.paths import path_settings, path_data, dir_index
+from afwf_fts_anything.paths import path_settings, path_data, dir_index, dir_icon
 from afwf_fts_anything.dataset import Dataset
 
 
@@ -10,6 +10,7 @@ class TestDataset:
         assert dataset._path_data.basename == "movie-data.json"
         assert dataset._path_setting.basename == "movie-setting.json"
         assert dataset._dir_index.basename == "movie-whoosh_index"
+        assert dataset._dir_icon.basename == "movie-icon"
 
     def test_indexing(self):
         dataset = Dataset(
@@ -17,6 +18,7 @@ class TestDataset:
             path_setting=path_settings,
             path_data=path_data,
             dir_index=dir_index,
+            dir_icon=dir_icon,
         )
         dataset.build_index(rebuild=True)
 

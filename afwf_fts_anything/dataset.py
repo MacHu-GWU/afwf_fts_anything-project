@@ -32,6 +32,7 @@ class Dataset(AttrsClass):
         this file can be user generated, or downloaded from the internet
     - ``${name}-whoosh_index``: the index directory, which contains the whoosh index of this dataset.
         the folder is automatically generated based on your setting and data.
+    - ``${name}-icon``: the icon directory, which contains the icon for Alfred.
     """
 
     name: str = AttrsClass.ib_str()
@@ -42,6 +43,9 @@ class Dataset(AttrsClass):
         type_=Path, nullable=True, default=None
     )
     dir_index: T.Optional[Path] = AttrsClass.ib_generic(
+        type_=Path, nullable=True, default=None
+    )
+    dir_icon: T.Optional[Path] = AttrsClass.ib_generic(
         type_=Path, nullable=True, default=None
     )
 
@@ -71,6 +75,15 @@ class Dataset(AttrsClass):
         if self.dir_index is not None:
             return self.dir_index
         return dir_project_home / f"{self.name}-whoosh_index"
+
+    @property
+    def _dir_icon(self) -> Path:
+        """
+        The path to the icon directory.
+        """
+        if self.dir_icon is not None:
+            return self.dir_icon
+        return dir_project_home / f"{self.name}-icon"
 
     @cached_property
     def setting(self) -> Setting:
