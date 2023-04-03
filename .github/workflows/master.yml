@@ -18,10 +18,11 @@ jobs:
       matrix:
         os: ["ubuntu-latest",]
 #        os: ["ubuntu-latest", ] # for debug only
-        python-version: ["2.7", ]
+        python-version: ["3.7", ]
+#        python-version: ["3.7", ]
     steps:
-      - uses: "actions/checkout@v2" # https://github.com/marketplace/actions/checkout
-      - uses: "actions/setup-python@v2" # https://github.com/marketplace/actions/setup-python
+      - uses: "actions/checkout@v3" # https://github.com/marketplace/actions/checkout
+      - uses: "actions/setup-python@v4" # https://github.com/marketplace/actions/setup-python
         with:
           python-version: "${{ matrix.python-version }}"
 
@@ -37,4 +38,10 @@ jobs:
           pip install .
 
       - name: "Run pytest"
-        run: "python -m pytest tests"
+        run: "python -m pytest tests --cov=afwf_fts_anything"
+
+      - name: "Upload coverage to Codecov"
+        if: "contains(env.USING_COVERAGE, matrix.python-version)"
+        uses: "codecov/codecov-action@v3" # https://github.com/marketplace/actions/codecov
+        with:
+          fail_ci_if_error: true
