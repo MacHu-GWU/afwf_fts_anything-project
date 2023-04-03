@@ -6,15 +6,10 @@ from afwf_fts_anything.dataset import Dataset
 
 class TestDataset:
     def test(self):
-        dataset = Dataset(
-            name="movie"
-        )
+        dataset = Dataset(name="movie")
         assert dataset.path_data.basename == "movie-data.json"
         assert dataset.path_setting.basename == "movie-setting.json"
         assert dataset.dir_index.basename == "movie-whoosh_index"
-
-
-
 
 
 if __name__ == "__main__":
