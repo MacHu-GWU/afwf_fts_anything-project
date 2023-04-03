@@ -50,12 +50,28 @@ class TestSetting:
                     type_is_store=True,
                 ),
             ],
+            title_field="Movie Title: {title} [{genres}]",
+            subtitle_field="{description}",
+            arg_field="{url}",
+            autocomplete_field="{title}",
         )
         schema = setting.create_whoosh_schema()
         assert len(setting.store_fields) == 6
         assert len(setting.searchable_fields) == 4
         assert len(setting.sortable_fields) == 1
 
+        data = {
+            "title": "The Godfather",
+            "description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+            "genres": "Crime, Drama",
+            "url": "https://www.imdb.com/title/tt0068646/",
+        }
+        assert setting.format_title(data) == "Movie Title: The Godfather [Crime, Drama]"
+        assert setting.format_subtitle(data) == data["description"]
+        assert setting.format_arg(data) == data["url"]
+        assert setting.format_autocomplete(data) == data["title"]
+
+        # from dict
         setting = Setting.from_dict(
             {
                 "fields": [

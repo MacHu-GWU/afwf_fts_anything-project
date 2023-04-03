@@ -83,9 +83,7 @@ class Field(AttrsClass):
             raise MalformedSetting(msg)
 
         if self.is_sortable is True and self.type_is_store is False:
-            msg = (
-                f"you have to use store field for sorting by {self.name!r}!"
-            )
+            msg = f"you have to use store field for sorting by {self.name!r}!"
             raise MalformedSetting(msg)
 
 
@@ -206,7 +204,12 @@ class Setting(AttrsClass):
 
     @cached_property
     def searchable_fields(self) -> T.List[str]:
-        return self.ngram_fields + self.phrase_fields + self.keyword_fields + self.numeric_fields
+        return (
+            self.ngram_fields
+            + self.phrase_fields
+            + self.keyword_fields
+            + self.numeric_fields
+        )
 
     @cached_property
     def sortable_fields(self) -> T.List[str]:
@@ -217,7 +220,7 @@ class Setting(AttrsClass):
         return [field.name for field in self.fields]
 
     @classmethod
-    def from_json_file(cls, path: T.Union[str, Path]) -> "Setting": # pragma: no cover
+    def from_json_file(cls, path: T.Union[str, Path]) -> "Setting":  # pragma: no cover
         return cls.from_dict(
             json.loads(
                 Path(path).read_text(),
@@ -270,6 +273,36 @@ class Setting(AttrsClass):
         SchemaClass = type(schema_classname, (whoosh.fields.SchemaClass,), attrs)
         schema = SchemaClass()
         return schema
+
+    def format_title(self, data: T.Dict[str, T.Any]) -> str:  # pragma: no cover
+        if self.title_field is None:
+            return data.get("title")
+        else:
+            return self.title_field.format(**data)
+
+    def format_subtitle(
+        self, data: T.Dict[str, T.Any]
+    ) -> T.Optional[str]:  # pragma: no cover
+        if self.subtitle_field is None:
+            return data.get("subtitle")
+        else:
+            return self.subtitle_field.format(**data)
+
+    def format_arg(
+        self, data: T.Dict[str, T.Any]
+    ) -> T.Optional[str]:  # pragma: no cover
+        if self.arg_field is None:
+            return data.get("arg")
+        else:
+            return self.arg_field.format(**data)
+
+    def format_autocomplete(
+        self, data: T.Dict[str, T.Any]
+    ) -> T.Optional[str]:  # pragma: no cover
+        if self.autocomplete_field is None:
+            return data.get("autocomplete")
+        else:
+            return self.autocomplete_field.format(**data)
 
     # def convert_to_item(self, doc):
     #     """
