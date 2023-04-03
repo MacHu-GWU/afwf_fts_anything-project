@@ -15,7 +15,7 @@ class TestSetting:
                     type_is_ngram=True,
                 ),
                 Field(
-                    name="subtitle",
+                    name="description",
                     type_is_store=True,
                     type_is_phrase=True,
                 ),
@@ -31,6 +31,35 @@ class TestSetting:
             ],
         )
         schema = setting.create_whoosh_schema()
+        assert len(setting.store_fields) == 4
+        assert len(setting.searchable_fields) == 3
+
+        setting = Setting.from_dict({
+            "fields": [
+                {
+                    "name": "title",
+                    "type_is_store": True,
+                    "type_is_ngram": True,
+                },
+                {
+                    "name": "description",
+                    "type_is_store": True,
+                    "type_is_phrase": True,
+                },
+                {
+                    "name": "genres",
+                    "type_is_store": True,
+                    "type_is_keyword": True,
+                },
+                {
+                    "name": "url",
+                    "type_is_store": True,
+                },
+            ],
+            "title_field": "Movie Title: {title} [{genres}]",
+            "subtitle_field": "{description}",
+            "arg_field": "{url}",
+        })
         assert len(setting.store_fields) == 4
         assert len(setting.searchable_fields) == 3
 

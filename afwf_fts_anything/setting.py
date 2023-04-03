@@ -12,6 +12,8 @@ import re
 import afwf
 import attr
 from attrs_mate import AttrsClass
+from pathlib_mate import Path
+from superjson import json
 import whoosh.fields
 
 from .helpers import is_no_overlap
@@ -192,6 +194,15 @@ class Setting(AttrsClass):
     @property
     def field_names(self) -> T.List[str]:
         return [field.name for field in self.fields]
+
+    @classmethod
+    def from_json_file(cls, path: T.Union[str, Path]) -> "Setting": # pragma: no cover
+        return cls.from_dict(
+            json.loads(
+                Path(path).read_text(),
+                ignore_comments=True,
+            )
+        )
 
     def create_whoosh_schema(self) -> whoosh.fields.Schema:
         """
