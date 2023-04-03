@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from afwf_fts_anything.exc import MalformedSetting
+from afwf_fts_anything.exc import MalformedSettingError
 from afwf_fts_anything.setting import Field, Setting
 
 
 class TestField:
     def test(self):
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Field(
                 name="weight",
                 type_is_store=False,
@@ -116,11 +116,11 @@ class TestSetting:
         assert len(setting.sortable_fields) == 1
 
         # you have duplicate field names in your fields: ['field1', 'field1']
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Setting(fields=[Field(name="field1"), Field(name="field1")])
 
         # you have to specify one and only one index type for column 'title', valid types are: ngram, phrase, keyword.
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Setting(
                 fields=[
                     Field(
@@ -132,11 +132,11 @@ class TestSetting:
             )
 
         # when title_field is not defined, you have to have a field called 'title' in your data fields, here's your data fields: []
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Setting(fields=[])
 
         # the title field is not a stored field!
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Setting(
                 fields=[
                     Field(
@@ -147,7 +147,7 @@ class TestSetting:
             )
 
         # your title_field = 'Movie Title: {the_movie_title}, {another_movie_title}' contains a field name 'the_movie_title', but it is not defined in your fields: ['movie_title']
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Setting(
                 fields=[
                     Field(
@@ -158,7 +158,7 @@ class TestSetting:
             )
 
         # our title_field = 'Movie Title: {movie_title}' contains a field name 'movie_title', but this field is not stored: Field(name='movie_title', type_is_store=False, type_is_ngram=False, type_is_phrase=False, type_is_keyword=False, ngram_minsize=2, ngram_maxsize=10, keyword_lowercase=True, keyword_commas=True)
-        with pytest.raises(MalformedSetting):
+        with pytest.raises(MalformedSettingError):
             Setting(
                 fields=[
                     Field(

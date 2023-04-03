@@ -137,7 +137,11 @@ class Dataset(AttrsClass):
         """
         self._dir_index.remove_if_exists()
 
-    def build_index(self, multi_thread: bool = False, rebuild: bool = False):
+    def build_index(
+        self,
+        multi_thread: bool = False,
+        rebuild: bool = False,
+    ):
         if rebuild is True:
             self.remove_index()
         idx = self.get_index()

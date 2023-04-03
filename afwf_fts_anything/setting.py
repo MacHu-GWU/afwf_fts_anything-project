@@ -18,7 +18,7 @@ import whoosh.fields
 
 from .helpers import is_no_overlap
 from .compat import cached_property
-from .exc import MalformedSetting
+from .exc import MalformedSettingError
 
 
 @attr.s
@@ -80,11 +80,11 @@ class Field(AttrsClass):
                 f"you have to specify one and only one index type for column {self.name!r}, "
                 f"valid types are: ngram, phrase, keyword, numeric."
             )
-            raise MalformedSetting(msg)
+            raise MalformedSettingError(msg)
 
         if self.is_sortable is True and self.type_is_store is False:
             msg = f"you have to use store field for sorting by {self.name!r}!"
-            raise MalformedSetting(msg)
+            raise MalformedSettingError(msg)
 
 
 p = re.compile(r"\{([A-Za-z0-9_]+)\}")
@@ -121,7 +121,7 @@ class Setting(AttrsClass):
     def _check_fields_name(self):
         if len(set(self.field_names)) != len(self.fields):
             msg = f"you have duplicate field names in your fields: {self.field_names}"
-            raise MalformedSetting(msg)
+            raise MalformedSettingError(msg)
 
     def _check_fields_index_type(self):  # pragma: no cover
         if not is_no_overlap(
@@ -135,21 +135,21 @@ class Setting(AttrsClass):
                 "`ngram_fields`, `phrase_fields` and `keyword_fields` "
                 "should not have any overlaps!"
             )
-            raise MalformedSetting(msg)
+            raise MalformedSettingError(msg)
 
     def _check_title_field(self):
         if self.title_field is None:
             if "title" in self.field_names:
                 if self.fields_mapper["title"].type_is_store is False:
                     msg = "the title field is not a stored field!"
-                    raise MalformedSetting(msg)
+                    raise MalformedSettingError(msg)
             else:
                 msg = (
                     f"when title_field is not defined, "
                     f"you have to have a field called 'title' in your data fields, "
                     f"here's your data fields: {self.field_names}"
                 )
-                raise MalformedSetting(msg)
+                raise MalformedSettingError(msg)
         else:
             for key in re.findall(p, self.title_field):
                 if key in self.fields_mapper:
@@ -159,14 +159,14 @@ class Setting(AttrsClass):
                             f"contains a field name {key!r}, "
                             f"but this field is not stored: {self.fields_mapper[key]}"
                         )
-                        raise MalformedSetting(msg)
+                        raise MalformedSettingError(msg)
                 else:
                     msg = (
                         f"your title_field = {self.title_field!r} "
                         f"contains a field name {key!r}, "
                         f"but it is not defined in your fields: {self.field_names}"
                     )
-                    raise MalformedSetting(msg)
+                    raise MalformedSettingError(msg)
 
     def __attrs_post_init__(self):
         # do some validation
