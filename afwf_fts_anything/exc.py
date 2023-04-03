@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
 
-class MalformedSetting(ValueError):
+class MalformedSettingError(ValueError):
+    pass
+
+
+class BuildIndexError(Exception):
     pass
