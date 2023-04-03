@@ -2,8 +2,9 @@
 # for more info: https://coverage.readthedocs.io/en/latest/config.html
 [run]
 omit =
-    afwf_fts_anything/_version.py
     afwf_fts_anything/tests/*
+    afwf_fts_anything/_version.py
+    afwf_fts_anything/compat.py
 
 [report]
 # Regexes for lines to exclude from consideration
