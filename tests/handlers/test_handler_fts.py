@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+
 import pytest
 
 from afwf_fts_anything.exc import BuildIndexError
 from afwf_fts_anything.paths import path_settings, path_data, dir_index, dir_icon
 from afwf_fts_anything.dataset import Dataset
 from afwf_fts_anything.handlers.fts import handler
-from rich import print as rprint
+
 
 class TestHandler:
     def test_build_index(self):
@@ -29,10 +30,18 @@ class TestHandler:
 
     def test_parse_query(self):
         assert handler.parse_query("movie ") == dict(dataset_name="movie", query_str="")
-        assert handler.parse_query("movie   ") == dict(dataset_name="movie", query_str="")
-        assert handler.parse_query("movie   ?") == dict(dataset_name="movie", query_str="?")
-        assert handler.parse_query("movie   hello   world") == dict(dataset_name="movie", query_str="hello world")
-        assert handler.parse_query("movie   hello , world") == dict(dataset_name="movie", query_str="hello world")
+        assert handler.parse_query("movie   ") == dict(
+            dataset_name="movie", query_str=""
+        )
+        assert handler.parse_query("movie   ?") == dict(
+            dataset_name="movie", query_str="?"
+        )
+        assert handler.parse_query("movie   hello   world") == dict(
+            dataset_name="movie", query_str="hello world"
+        )
+        assert handler.parse_query("movie   hello , world") == dict(
+            dataset_name="movie", query_str="hello world"
+        )
 
     def test_main(self):
         sf = handler.main(
