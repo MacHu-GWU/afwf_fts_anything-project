@@ -304,25 +304,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{var:open_url_arg}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>2FE6CFA4-74F5-41A7-A2CA-43A4D999A92D</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -372,6 +353,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{var:open_url_arg}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>2FE6CFA4-74F5-41A7-A2CA-43A4D999A92D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>conditions</key>
 				<array>
 					<dict>
@@ -398,21 +398,6 @@
 			<string>8FA29A6B-5874-4EA1-860A-BBFCB29574D9</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>openwith</key>
-				<string></string>
-				<key>sourcefile</key>
-				<string>{var:open_file_path}</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openfile</string>
-			<key>uid</key>
-			<string>CF6C4785-94C4-4F4E-B0DF-1A5050ABDB1B</string>
-			<key>version</key>
-			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -466,6 +451,21 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>openwith</key>
+				<string></string>
+				<key>sourcefile</key>
+				<string>{var:open_file_path}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openfile</string>
+			<key>uid</key>
+			<string>CF6C4785-94C4-4F4E-B0DF-1A5050ABDB1B</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>conditions</key>
 				<array>
 					<dict>
@@ -492,29 +492,6 @@
 			<string>427AF54F-215D-4B50-A8E0-756E0E5C3778</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string>{query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>6A0C1DD6-4609-4A13-8391-DEB81586E6BE</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -550,7 +527,7 @@
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string>Write File ...</string>
+				<string>Write '{query}' to file.txt ...</string>
 				<key>title</key>
 				<string>afwf-example-write-file</string>
 				<key>type</key>
@@ -564,6 +541,29 @@
 			<string>C99C978D-7CE7-44C1-ACEE-8AC950EC48BB</string>
 			<key>version</key>
 			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>{query}</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>6A0C1DD6-4609-4A13-8391-DEB81586E6BE</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -592,6 +592,27 @@
 			<string>alfred.workflow.utility.conditional</string>
 			<key>uid</key>
 			<string>AC763A34-8198-4C21-92AB-F42CD7BAB468</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{var:send_notification_subtitle}</string>
+				<key>title</key>
+				<string>{var:send_notification_title}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>553D013F-20CD-48BA-965E-8A2E558EAF19</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -629,7 +650,7 @@
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string>Read File ...</string>
+				<string>Read content of file.txt ...</string>
 				<key>title</key>
 				<string>afwf-example-read-file</string>
 				<key>type</key>
@@ -643,27 +664,6 @@
 			<string>36368E07-6FB3-45F8-ACB5-D5AF2FDEA3BE</string>
 			<key>version</key>
 			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<false/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{var:send_notification_subtitle}</string>
-				<key>title</key>
-				<string>{var:send_notification_title}</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>553D013F-20CD-48BA-965E-8A2E558EAF19</string>
-			<key>version</key>
-			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -770,7 +770,7 @@
 				<key>queuemode</key>
 				<integer>2</integer>
 				<key>runningsubtext</key>
-				<string></string>
+				<string>calculating ... the result will be cached for 5 sec</string>
 				<key>script</key>
 				<string>/Users/sanhehu/.pyenv/versions/3.8.11/bin/python main.py 'memorize_cache {query}'</string>
 				<key>scriptargtype</key>
@@ -778,7 +778,7 @@
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string></string>
+				<string>Please enter your key:</string>
 				<key>title</key>
 				<string>afwf-example-memorize-cache</string>
 				<key>type</key>
@@ -827,7 +827,7 @@
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string></string>
+				<string>set key value settings ...</string>
 				<key>title</key>
 				<string>afwf-example-set-settings</string>
 				<key>type</key>

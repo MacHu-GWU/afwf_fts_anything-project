@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "afwf_fts_anything"
-version = "1.1.1"
-description = "Alfred Workflow, Full Text Search Anything"
+version = "0.1.1"
+description = "A sample Alfred Workflow Python project"
 authors = ["Sanhe Hu <husanhe@gmail.com>"]
 
 
 [tool.poetry.dependencies]
 python = "3.8.*"
-afwf = "0.2.2"
+afwf = "0.3.1"
 attrs = "21.4.0"
 attrs_mate = "1.0.2"
 pathlib_mate = " 1.2.1"
