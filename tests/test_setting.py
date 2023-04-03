@@ -5,6 +5,16 @@ from afwf_fts_anything.exc import MalformedSetting
 from afwf_fts_anything.setting import Field, Setting
 
 
+class TestField:
+    def test(self):
+        with pytest.raises(MalformedSetting):
+            Field(
+                name="weight",
+                type_is_store=False,
+                is_sortable=True,
+            )
+
+
 class TestSetting:
     def test(self):
         setting = Setting(
@@ -34,32 +44,34 @@ class TestSetting:
         assert len(setting.store_fields) == 4
         assert len(setting.searchable_fields) == 3
 
-        setting = Setting.from_dict({
-            "fields": [
-                {
-                    "name": "title",
-                    "type_is_store": True,
-                    "type_is_ngram": True,
-                },
-                {
-                    "name": "description",
-                    "type_is_store": True,
-                    "type_is_phrase": True,
-                },
-                {
-                    "name": "genres",
-                    "type_is_store": True,
-                    "type_is_keyword": True,
-                },
-                {
-                    "name": "url",
-                    "type_is_store": True,
-                },
-            ],
-            "title_field": "Movie Title: {title} [{genres}]",
-            "subtitle_field": "{description}",
-            "arg_field": "{url}",
-        })
+        setting = Setting.from_dict(
+            {
+                "fields": [
+                    {
+                        "name": "title",
+                        "type_is_store": True,
+                        "type_is_ngram": True,
+                    },
+                    {
+                        "name": "description",
+                        "type_is_store": True,
+                        "type_is_phrase": True,
+                    },
+                    {
+                        "name": "genres",
+                        "type_is_store": True,
+                        "type_is_keyword": True,
+                    },
+                    {
+                        "name": "url",
+                        "type_is_store": True,
+                    },
+                ],
+                "title_field": "Movie Title: {title} [{genres}]",
+                "subtitle_field": "{description}",
+                "arg_field": "{url}",
+            }
+        )
         assert len(setting.store_fields) == 4
         assert len(setting.searchable_fields) == 3
 

@@ -45,6 +45,8 @@ class Field(AttrsClass):
     :param keyword_lowercase: for keyword type field, is the match case-sensitive?
         default True (not sensitive).
     :param keyword_commas: is the delimiter of keyword is comma or space?
+    :param is_sortable: is the field will be used for sorting?
+    :param is_sort_ascending: is the field will be used for sort ascending?
     """
 
     name: str = attr.ib()
@@ -56,6 +58,9 @@ class Field(AttrsClass):
     ngram_maxsize: bool = attr.ib(default=10)
     keyword_lowercase: bool = attr.ib(default=True)
     keyword_commas: bool = attr.ib(default=True)
+    is_sortable: bool = attr.ib(default=False)
+    sort_weight: float = attr.ib(default=1.0)
+    is_sort_ascending: bool = attr.ib(default=True)
 
     def __attrs_post_init__(self):
         # do some validation
@@ -72,6 +77,12 @@ class Field(AttrsClass):
             msg = (
                 f"you have to specify one and only one index type for column {self.name!r}, "
                 f"valid types are: ngram, phrase, keyword."
+            )
+            raise MalformedSetting(msg)
+
+        if self.is_sortable is True and self.type_is_store is False:
+            msg = (
+                f"you have to use store field for sorting by {self.name!r}!"
             )
             raise MalformedSetting(msg)
 
