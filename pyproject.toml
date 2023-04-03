@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "afwf_fts_anything"
-version = "0.1.1"
-description = "A sample Alfred Workflow Python project"
+version = "1.1.1"
+description = "Allows you to do full-text search on your own dataset, and use the result to open url, open file, run script, or basically do anything."
 authors = ["Sanhe Hu <husanhe@gmail.com>"]
 
 
@@ -41,12 +41,6 @@ optional = true
 
 
 [tool.poetry.group.doc.dependencies]
-Sphinx = "4.3.0"
-sphinx-jinja = "1.1.1"
-rstobj = "1.2.1"
-docfly = "1.0.2"
-furo = "2021.8.31"
-sphinx-inline-tabs = "2021.8.17b10"
 
 
 [tool.poetry.group.test]
