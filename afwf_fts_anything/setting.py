@@ -54,12 +54,13 @@ class Field(AttrsClass):
     type_is_ngram: bool = attr.ib(default=False)
     type_is_phrase: bool = attr.ib(default=False)
     type_is_keyword: bool = attr.ib(default=False)
+    type_is_numeric: bool = attr.ib(default=False)
     ngram_minsize: bool = attr.ib(default=2)
     ngram_maxsize: bool = attr.ib(default=10)
     keyword_lowercase: bool = attr.ib(default=True)
     keyword_commas: bool = attr.ib(default=True)
+    weight: float = attr.ib(default=1.0)
     is_sortable: bool = attr.ib(default=False)
-    sort_weight: float = attr.ib(default=1.0)
     is_sort_ascending: bool = attr.ib(default=True)
 
     def __attrs_post_init__(self):
@@ -69,6 +70,7 @@ class Field(AttrsClass):
                 self.type_is_ngram,
                 self.type_is_phrase,
                 self.type_is_keyword,
+                self.type_is_numeric,
             ]
         )
         if flag <= 1:
@@ -76,7 +78,7 @@ class Field(AttrsClass):
         else:
             msg = (
                 f"you have to specify one and only one index type for column {self.name!r}, "
-                f"valid types are: ngram, phrase, keyword."
+                f"valid types are: ngram, phrase, keyword, numeric."
             )
             raise MalformedSetting(msg)
 
@@ -199,8 +201,12 @@ class Setting(AttrsClass):
         return [field.name for field in self.fields if field.type_is_keyword]
 
     @cached_property
+    def numeric_fields(self) -> T.List[str]:
+        return [field.name for field in self.fields if field.type_is_numeric]
+
+    @cached_property
     def searchable_fields(self) -> T.List[str]:
-        return self.ngram_fields + self.phrase_fields + self.keyword_fields
+        return self.ngram_fields + self.phrase_fields + self.keyword_fields + self.numeric_fields
 
     @cached_property
     def sortable_fields(self) -> T.List[str]:
@@ -230,17 +236,31 @@ class Setting(AttrsClass):
         for field in self.fields:
             if field.type_is_ngram:
                 whoosh_field = whoosh.fields.NGRAM(
+                    stored=field.type_is_store,
                     minsize=field.ngram_minsize,
                     maxsize=field.ngram_maxsize,
-                    stored=field.type_is_store,
+                    field_boost=field.weight,
+                    sortable=field.is_sortable,
                 )
             elif field.type_is_phrase:
-                whoosh_field = whoosh.fields.TEXT(stored=True)
+                whoosh_field = whoosh.fields.TEXT(
+                    stored=field.type_is_store,
+                    field_boost=field.weight,
+                    sortable=field.is_sortable,
+                )
             elif field.type_is_keyword:
                 whoosh_field = whoosh.fields.KEYWORD(
+                    stored=field.type_is_store,
                     lowercase=field.keyword_lowercase,
                     commas=field.keyword_commas,
+                    field_boost=field.weight,
+                    sortable=field.is_sortable,
+                )
+            elif field.type_is_numeric:
+                whoosh_field = whoosh.fields.NUMERIC(
                     stored=field.type_is_store,
+                    field_boost=field.weight,
+                    sortable=field.is_sortable,
                 )
             elif field.type_is_store:
                 whoosh_field = whoosh.fields.STORED()

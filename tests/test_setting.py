@@ -20,6 +20,10 @@ class TestSetting:
         setting = Setting(
             fields=[
                 Field(
+                    name="movie_id",
+                    type_is_store=True,
+                ),
+                Field(
                     name="title",
                     type_is_store=True,
                     type_is_ngram=True,
@@ -35,19 +39,30 @@ class TestSetting:
                     type_is_keyword=True,
                 ),
                 Field(
+                    name="rating",
+                    type_is_store=True,
+                    type_is_numeric=True,
+                    is_sortable=True,
+                    is_sort_ascending=False,
+                ),
+                Field(
                     name="url",
                     type_is_store=True,
                 ),
             ],
         )
         schema = setting.create_whoosh_schema()
-        assert len(setting.store_fields) == 4
-        assert len(setting.searchable_fields) == 3
-        assert len(setting.sortable_fields) == 0
+        assert len(setting.store_fields) == 6
+        assert len(setting.searchable_fields) == 4
+        assert len(setting.sortable_fields) == 1
 
         setting = Setting.from_dict(
             {
                 "fields": [
+                    {
+                        "name": "movie_id",
+                        "type_is_store": True,
+                    },
                     {
                         "name": "title",
                         "type_is_store": True,
@@ -64,6 +79,13 @@ class TestSetting:
                         "type_is_keyword": True,
                     },
                     {
+                        "name": "rating",
+                        "type_is_store": True,
+                        "type_is_numeric": True,
+                        "is_sortable": True,
+                        "is_sort_ascending": False,
+                    },
+                    {
                         "name": "url",
                         "type_is_store": True,
                     },
@@ -73,8 +95,9 @@ class TestSetting:
                 "arg_field": "{url}",
             }
         )
-        assert len(setting.store_fields) == 4
-        assert len(setting.searchable_fields) == 3
+        assert len(setting.store_fields) == 6
+        assert len(setting.searchable_fields) == 4
+        assert len(setting.sortable_fields) == 1
 
         # you have duplicate field names in your fields: ['field1', 'field1']
         with pytest.raises(MalformedSetting):
