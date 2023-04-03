@@ -17,6 +17,7 @@ python-Levenshtein = "0.20.9"
 fuzzywuzzy = "0.18.0"
 whoosh = "2.7.4"
 superjson = "1.0.2"
+requests = "2.27.1"
 cached-property = { version = "1.5.2", markers = "python_version <= '3.7'" }
 
 
