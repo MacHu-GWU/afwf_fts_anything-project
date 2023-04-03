@@ -6,7 +6,7 @@ authors = ["Sanhe Hu <husanhe@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "3.8.*"
+python = "^3.7"
 afwf = "0.3.1"
 attrs = "21.4.0"
 attrs_mate = "1.0.2"
