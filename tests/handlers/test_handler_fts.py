@@ -2,7 +2,7 @@
 
 import pytest
 
-from afwf_fts_anything.exc import BuildIndexError
+from afwf_fts_anything.exc import GetDataError, BuildIndexError
 from afwf_fts_anything.paths import path_setting, path_data, dir_index, dir_icon
 from afwf_fts_anything.dataset import Dataset
 from afwf_fts_anything.handlers.fts import handler
@@ -25,7 +25,7 @@ class TestHandler:
             path_data=path_data.change("not-exists-data.json"),
             dir_index=dir_index.change(new_basename="not-exists"),
         )
-        with pytest.raises(BuildIndexError):
+        with pytest.raises(GetDataError):
             handler.build_index(dataset)
 
     def test_parse_query(self):

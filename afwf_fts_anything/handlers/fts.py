@@ -6,7 +6,7 @@ import attr
 from pathlib_mate import Path
 
 from ..dataset import Dataset
-from ..exc import BuildIndexError
+from ..exc import GetDataError, BuildIndexError
 
 
 @attr.define
@@ -19,8 +19,12 @@ class Handler(afwf.Handler):
         if dataset._dir_index.exists() is False:
             # try to build index, if anything wrong, clear the whoosh index
             try:
-                dataset.build_index()
-            except Exception as e:
+                data = dataset.get_data()
+            except Exception as e: # pragma: no cover
+                raise GetDataError(f"GetDataError, {e}")
+            try:
+                dataset.build_index(data)
+            except Exception as e: # pragma: no cover
                 dataset._dir_index.remove_if_exists()
                 raise BuildIndexError(f"BuildIndexError, {e}")
 
