@@ -174,3 +174,10 @@ User Guide
 ------------------------------------------------------------------------------
 - `How it Works <./docs/user-guide/01-How-it-Works.rst>`_
 - `How to Use <./docs/user-guide/02-How-to-Use.rst>`_
+
+
+Projects based on ``afwf_fts_anything``
+------------------------------------------------------------------------------
+- Search `AWS CloudFormation Resource and Property Reference <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html>`_, quickly jump to Official AWS CloudFormation Resource and Property Document: https://github.com/MacHu-GWU/alfred-cloudformation-resource-property-ref
+- Search `Terraform AWS Resource Reference <https://registry.terraform.io/providers/hashicorp/aws/latest/docs>`_, quickly jump to Official Terraform AWS Resource Document: https://github.com/MacHu-GWU/alfred-terraform-resource-property-ref
+- Search `AWS Python Boto3 <https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/index.html>`_ API Reference: https://github.com/MacHu-GWU/alfred-python-boto3-ref

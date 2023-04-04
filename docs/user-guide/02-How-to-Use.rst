@@ -37,9 +37,3 @@ FAQ
 
 - Q: Why it still returns old data after I updated the dataset?
 - A: Just delete the ``${HOME}/.alfred-afwf/afwf_fts_anything/<dataset_name>-whoosh_index`` directory.
-
-
-Projects based on ``afwf_fts_anything``
-------------------------------------------------------------------------------
-- search AWS CloudFormation Resource and Property Reference, quickly jump to Official AWS CloudFormation Resource and Property Document: https://github.com/MacHu-GWU/alfred-cloudformation-resource-property-ref
-- search Terraform AWS Resource Reference, quickly jump to Official Terraform AWS Resource Document: https://github.com/MacHu-GWU/alfred-terraform-resource-property-ref
