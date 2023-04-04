@@ -4,6 +4,9 @@
 .. image:: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project
 
+.. image:: https://img.shields.io/badge/release_history--None.svg?style=social
+    :target: https://github.com/MacHu-GWU/afwf_fts_anything-project/blob/main/release-history.rst
+
 .. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
     :target: https://github.com/MacHu-GWU/afwf_fts_anything-project
 
