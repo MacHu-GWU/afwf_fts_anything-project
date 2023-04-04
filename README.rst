@@ -170,3 +170,4 @@ Note:
 User Guide
 ------------------------------------------------------------------------------
 - `How it Works <./docs/user-guide/01-How-it-Works.rst>`_
+- `How to Use <./docs/user-guide/02-How-to-Use.rst>`_

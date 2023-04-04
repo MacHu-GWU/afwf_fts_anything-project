@@ -260,3 +260,4 @@ Below is a sample workflow configuration. You need to know:
 
 Next
 ------------------------------------------------------------------------------
+Please move to the `How to Use <./02-How-to-Use.rst>`_ to see how to install and use it.
