@@ -198,7 +198,7 @@ class Dataset(AttrsClass):
             ]
         )
         search_kwargs = dict(
-            q,
+            q=q,
             limit=limit,
         )
         if len(self.setting.sortable_fields):
