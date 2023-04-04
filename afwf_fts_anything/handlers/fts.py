@@ -102,7 +102,8 @@ class Handler(afwf.Handler):
 
     def parse_query(self, query: str):
         afwf.log_debug_info(f"receive query: {query!r}")
-        q = afwf.QueryParser(delimiter=list(" ,-_&@'\"\\/")).parse(query)
+        # strip all delimiter except ?, because ? is used for special action
+        q = afwf.QueryParser(delimiter=list(" ~`!@#$%^&*()-_=+{}[]\\|:;\"'<>,./")).parse(query)
         afwf.log_debug_info(f"trimmed parts: {q.trimmed_parts}")
         dataset_name = q.trimmed_parts[0]
         query_str = " ".join(q.trimmed_parts[1:])
