@@ -167,5 +167,6 @@ Note:
     ``afwf_fts_anything`` support comments in json, you don't have to remove it to use.
 
 
-Table of Content
+User Guide
 ------------------------------------------------------------------------------
+- `How it Works <./docs/user-guide/01-How-it-Works.rst>`_
