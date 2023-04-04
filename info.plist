@@ -4,6 +4,8 @@
 <dict>
 	<key>bundleid</key>
 	<string>MacHu-GWU.afwf_fts_anything</string>
+	<key>category</key>
+	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
 		<key>27D78147-51C3-4E72-B805-0E11B1F3A6D8</key>
@@ -36,6 +38,16 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>92ADA757-06DC-428F-AA48-7C16FD4BE487</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -98,7 +110,7 @@
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string>~/.pyenv/shims/python3.8 main.py 'fts movie {query}'</string>
+				<string>/usr/bin/python3 main.py 'fts movie {query}'</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -222,13 +234,15 @@
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</string>
+			<string>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>afwf_fts_anything is an Alfred Workflow allows you to do full-text search on your own dataset, and use the result to open url, open file, run script, or basically do anything. Typically, you need to setup expansive elasticsearch server, learn how to do data ingestion, learn search API, and build your own Alfred workflow. afwf_fts_anything removes all the blockers and let you just focus on your dataset and search configuration.
+
+See more at: https://github.com/MacHu-GWU/afwf_fts_anything-project</string>
 	<key>uidata</key>
 	<dict>
 		<key>06224816-79FA-4D91-A314-0C8E6756D80B</key>
@@ -252,13 +266,6 @@
 			<key>ypos</key>
 			<integer>65</integer>
 		</dict>
-		<key>3CE67A04-2636-4F14-B8A7-8CCB501FB4AB</key>
-		<dict>
-			<key>xpos</key>
-			<integer>740</integer>
-			<key>ypos</key>
-			<integer>255</integer>
-		</dict>
 		<key>55DEB335-2FC6-4FF9-8482-F949B27BFEE9</key>
 		<dict>
 			<key>xpos</key>
@@ -273,7 +280,18 @@
 			<key>ypos</key>
 			<integer>170</integer>
 		</dict>
+		<key>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</key>
+		<dict>
+			<key>xpos</key>
+			<integer>740</integer>
+			<key>ypos</key>
+			<integer>255</integer>
+		</dict>
 	</dict>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.1.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/MacHu-GWU/afwf_fts_anything-project</string>
 </dict>
