@@ -40,6 +40,9 @@ class Field(AttrsClass):
     :param type_is_keyword: if True, the value is indexed using keyword. The
         keyword has to be exactly matched. See
         https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
+    :param type_is_numeric: if True, the value is indexed using number. The
+        number field is not used for searching, it is only used for sorting. See
+        https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
     :param ngram_minsize: minimal number of character to match, default is 2.
     :param ngram_maxsize: maximum number of character to match, default is 10.
     :param keyword_lowercase: for keyword type field, is the match case-sensitive?
@@ -312,40 +315,3 @@ class Setting(AttrsClass):
             return data.get("icon")
         else:
             return self.icon_field.format(**data)
-
-    # def convert_to_item(self, doc):
-    #     """
-    #     Convert dict data to ``WFItem``
-    #     for title, subtitle, arg, autocomplete field:
-    #     1. if ``setting.title_field`` is None, use "title" field.
-    #     2. if ``setting.title_field`` is a str, test if it is in columns fields,
-    #         use that field.
-    #     3. if ``setting.title_field`` is a str, and not in any columns fields,
-    #         it must be Python String Format Template.
-    #     :type doc: dict
-    #     :rtype: WFItem
-    #     """
-    #     # whoosh 所返回的 doc 中并不一定所有项都有, 有的项可能没有, 我们先为这些
-    #     # 没有的项赋值 None
-    #     doc = {c_setting.name: doc.get(c_setting.name) for c_setting in self.columns}
-    #     item_data = dict()
-    #
-    #     # find corresponding value for every workflow item field
-    #     for item_field in ITEM_ATTRS:
-    #         setting_key = "{}_field".format(item_field)
-    #         setting_value = getattr(self, setting_key)
-    #         if setting_value is None:  # use item_field by default
-    #             field_value = doc.get(item_field)
-    #
-    #         elif setting_value in self.column_names:  # one of column
-    #             field_value = doc.get(setting_value)
-    #
-    #         else:  # template
-    #             field_value = setting_value.format(**doc)
-    #
-    #         if field_value is not None:
-    #             field_value = six.text_type(field_value)  # always use string
-    #             if field_value:
-    #                 item_data[item_field] = field_value
-    #
-    #     return WFItem(**item_data)

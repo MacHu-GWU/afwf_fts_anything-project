@@ -189,36 +189,3 @@ class Dataset(AttrsClass):
                 )
             ]
         return doc_list
-
-    # @property
-    # def alfred_title(self) -> str:
-    #     return self.title.format(**self.data)
-    #
-    # @property
-    # def alfred_subtitle(self) -> T.Optional[str]:
-    #     if self.subtitle is None:
-    #         return None
-    #     return self.subtitle.format(**self.data)
-    #
-    # @property
-    # def alfred_arg(self) -> T.Optional[str]:
-    #     if self.arg is None:
-    #         return None
-    #     return self.arg.format(**self.data)
-    #
-    # @property
-    # def alfred_autocomplete(self) -> T.Optional[str]:
-    #     if self.autocomplete is None:
-    #         return None
-    #     return self.autocomplete.format(**self.data)
-    #
-    # def to_item(self) -> afwf.Item:
-    #     item = afwf.Item(
-    #         title=self.alfred_title,
-    #         subtitle=self.alfred_subtitle,
-    #         arg=self.alfred_arg,
-    #         autocomplete=self.alfred_autocomplete,
-    #     )
-    #     if self.icon:
-    #         item.set_icon(self.icon)
-    #     return item
