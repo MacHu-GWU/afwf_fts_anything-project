@@ -1,7 +1,7 @@
 .. image:: https://github.com/MacHu-GWU/afwf_fts_anything-project/workflows/CI/badge.svg
     :target: https://github.com/MacHu-GWU/afwf_fts_anything-project/actions?query=workflow:CI
 
-.. image:: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/MacHu-GWU/afwf_fts_anything-project
 
 .. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
