@@ -5,6 +5,9 @@ How it Works
     :local:
     :depth: 1
 
+:param name: the name of the field
+
+:name: the name of the field
 
 Core Concept
 ------------------------------------------------------------------------------
