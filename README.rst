@@ -30,6 +30,9 @@
 
 The Alfred Workflow: Full Text Search Anything
 ==============================================================================
+.. contents::
+    :depth: 1
+    :local:
 
 
 Introduction
@@ -159,3 +162,7 @@ Sample search settings (content of ``movie-setting.json``):
 Note:
 
       ``afwf_fts_anything`` support comments in json, you don't have to remove it to use.
+
+
+Table of Content
+------------------------------------------------------------------------------

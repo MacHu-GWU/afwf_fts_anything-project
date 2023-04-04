@@ -40,12 +40,15 @@ class Field(AttrsClass):
     :param type_is_keyword: if True, the value is indexed using keyword. The
         keyword has to be exactly matched. See
         https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
-    :param ngram_minsize: minimal number of character to match, default 2.
-    :param ngram_maxsize: maximum number of character to match, default 10.
+    :param ngram_minsize: minimal number of character to match, default is 2.
+    :param ngram_maxsize: maximum number of character to match, default is 10.
     :param keyword_lowercase: for keyword type field, is the match case-sensitive?
         default True (not sensitive).
     :param keyword_commas: is the delimiter of keyword is comma or space?
-    :param is_sortable: is the field will be used for sorting?
+    :param weight: the weight of the field for sorting in the search result.
+        default is 1.0.
+    :param is_sortable: is the field will be used for sorting? If True, the field
+        has to be stored.
     :param is_sort_ascending: is the field will be used for sort ascending?
     """
 
@@ -95,6 +98,7 @@ class Setting(AttrsClass):
     """
     Defines how you want to index your dataset.
 
+    :param fields: list of :class:`Field` objects, defines how you want to search.
     :param title_field: which field is used as ``WorkflowItem.title``. It displays
         as the big title in alfred drop down menu.
     :param subtitle_field: which field is used as ``WorkflowItem.subtitle``.
