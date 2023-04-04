@@ -8,7 +8,7 @@ How it Works
 .. topic:: Topic Title
 
     Subsequent indented lines comprise
-    the body of the topic, and are
+    the body of the topic, and are1
     interpreted as body elements.
 
 :hello name: the name of the field
