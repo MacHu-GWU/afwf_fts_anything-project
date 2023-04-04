@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest",]
 #        os: ["ubuntu-latest", ] # for debug only
-        python-version: ["3.7", ]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 #        python-version: ["3.7", ]
     steps:
       - uses: "actions/checkout@v3" # https://github.com/marketplace/actions/checkout
