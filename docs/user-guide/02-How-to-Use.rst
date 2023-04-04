@@ -6,8 +6,7 @@ Installation
 ------------------------------------------------------------------------------
 - Make sure you have installed `Alfred 3+ <https://www.alfredapp.com/>`_.
 - Make sure you already purchased `Powerpack <https://www.alfredapp.com/powerpack/>`_, you have to buy powerpack to use `Alfred Workflow <https://www.alfredapp.com/workflows/>`_ feature.
-- Go to `Release <https://github.com/MacHu-GWU/afwf_fts_anything-project/releases>`_, download the latest ``afwf_fts_anything-${version}-macosx_universal.alfredworkflow
-``. And double click to import to Alfred Workflow. Since this project only uses pure Python library (no C library), so it is universal for both Intel and ARM MacOS.
+- Go to `Release <https://github.com/MacHu-GWU/afwf_fts_anything-project/releases>`_, download the latest ``afwf_fts_anything-${version}-macosx_universal.alfredworkflow``. And double click to import to Alfred Workflow. Since this project only uses pure Python library (no C library), so it is universal for both Intel and ARM MacOS.
 
 
 Test with The Sample Movie Dataset
