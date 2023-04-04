@@ -1,42 +1,30 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-import os
+"""
+[CN]
+Alfred Workflow Script Filter 的入口主文件, 适用于所有的 Python Alfred Workflow 项目.
+如果你不懂这个文件起什么作用, 最多你可以修改 ``debug=True``, 请不要修改其他部分.
+
+How it works:
+
+这个文件只应该在 Alfred Workflow 真正的目录下被运行, 而不应该是在这个 Git repo 的开发目录
+下被运行. 真正的目录路径长这个样子
+``/path/to/Alfred.alfredpreferences/workflows/user.workflow.ABCD1234-A1B2-C3D4-E5F6-A1B2C3D4E5F6``.
+
+这个文件的核心逻辑是, 根据文件本身的位置定位到 ``lib`` 目录所在的位置, 并将其加入到 ``sys.path`` 中,
+这样 Python 依赖就可以被找到了. 然后再从你的 workflow 源码包中导入 Workflow 对象, 并运行它.
+"""
+
 import sys
-import json
-from workflow import Workflow3
+from pathlib import Path
 
-here = os.path.dirname(os.path.abspath(__file__))
-wf_input_file = os.path.join(here, "wf-input.json")
-wf_output_file = os.path.join(here, "wf-output.json")
+dir_here = Path(__file__).absolute().parent
+dir_lib = Path(dir_here, "lib")
 
-
-def json_dump(file, data):
-    with open(file, "wb") as f:
-        f.write(json.dumps(data, indent=4).encode("utf-8"))
-
-
-def main(wf):
-    """
-    .. note::
-
-        注意, 所有的第三方库的导入都要放在 main 函数内, 因为直到创建 Workflow 实例时,
-        lib 目录才会被添加到系统路径中去. 在这之前所有的第三方库都无法被找到.
-    """
-    from afwf_fts_anything.handlers import handler
-
-    # 将 Python 收到的 args 以及返回的 items 保存为 json 文件, 用于调试
-    # if "user.workflow" not in here: # don't dump if in alfred preference folder
-    json_dump(wf_input_file, wf.args)
-    # json_dump(wf_input_file, sys.argv)
-    json_dump(wf_output_file, wf.obj)
-    # json_dump(wf_output_file, wf.args)
-
-    wf = handler(wf)
-
-    wf.send_feedback()
-
+if dir_lib.exists():
+    sys.path = [str(dir_lib), ] + sys.path
 
 if __name__ == "__main__":
-    wf = Workflow3(libraries=["lib", ])
-    sys.exit(wf.run(main))
+    from afwf_fts_anything import wf
+
+    wf.run(debug=True)

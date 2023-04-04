@@ -1,0 +1,45 @@
+{
+    // define how you want to search this dataset
+    "fields": [
+        {
+            "name": "movie_id",
+            "type_is_store": true
+        },
+        {
+            "name": "title",
+            "type_is_store": true,
+            "type_is_ngram": true,
+            "ngram_maxsize": 10,
+            "ngram_minsize": 2,
+            "weight": 2.0
+        },
+        {
+            "name": "description",
+            "type_is_store": true,
+            "type_is_phrase": true
+        },
+        {
+            "name": "genres",
+            "type_is_store": true,
+            "type_is_keyword": true,
+            "keyword_lowercase": true,
+            "weight": 1.5
+        },
+        {
+            "name": "rating",
+            "type_is_store": true,
+            "type_is_numeric": true,
+            "is_sortable": true,
+            "is_sort_ascending": false
+        },
+        {
+            "name": "url",
+            "type_is_store": true
+        }
+    ],
+    "title_field": "{title} ({genres}) rate {rating}", // title on Alfred drop down menu
+    "subtitle_field": "{description}", // subtitle on Alfred drop down menu
+    "arg_field": "{movie_id}", // argument for other workflow component
+    "autocomplete_field": "{title}", // tab auto complete behavior
+    "icon_field": "movie-icon.png"
+}

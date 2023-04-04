@@ -1,0 +1,74 @@
+[
+    {
+        "movie_id": 1,
+        "title": "The Shawshank Redemption",
+        "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+        "genres": "Drama",
+        "rating": 9.2,
+        "url": "https://www.imdb.com/title/tt0111161"
+    },
+    {
+        "movie_id": 2,
+        "title": "The Godfather",
+        "description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+        "genres": "Crime, Drama",
+        "rating": 9.2,
+        "url": "https://www.imdb.com/title/tt0068646"
+    },
+    {
+        "movie_id": 3,
+        "title": "The Dark Knight",
+        "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+        "genres": "Action, Crime, Drama",
+        "rating": 9.0,
+        "url": "https://www.imdb.com/title/tt0468569"
+    },
+    {
+        "movie_id": 4,
+        "title": "12 Angry Men",
+        "description": "The jury in a New York City murder trial is frustrated by a single member whose skeptical caution forces them to more carefully consider the evidence before jumping to a hasty verdict.",
+        "genres": "Crime, Drama",
+        "rating": 9.0,
+        "url": "https://www.imdb.com/title/tt0050083"
+    },
+    {
+        "movie_id": 5,
+        "title": "Schindler's List",
+        "description": "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.",
+        "genres": "Biography, Drama, History",
+        "rating": 8.9,
+        "url": "https://www.imdb.com/title/tt0108052"
+    },
+    {
+        "movie_id": 6,
+        "title": "The Lord of the Rings: The Return of the King",
+        "description": "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.",
+        "genres": "Action, Adventure, Drama",
+        "rating": 8.9,
+        "url": "https://www.imdb.com/title/tt0167260"
+    },
+    {
+        "movie_id": 7,
+        "title": "Pulp Fiction",
+        "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+        "genres": "Crime, Drama",
+        "rating": 8.8,
+        "url": "https://www.imdb.com/title/tt0110912"
+    },
+    {
+        "movie_id": 8,
+        "title": "Fight Club",
+        "description": "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.",
+        "genres": "Drama",
+        "rating": 8.7,
+        "url": "https://www.imdb.com/title/tt0137523"
+    },
+    {
+        "movie_id": 9,
+        "title": "Saving Private Ryan",
+        "description": "Following the Normandy Landings, a group of U.S. soldiers go behind enemy lines to retrieve a paratrooper whose brothers have been killed in action.",
+        "genres": "Drama, War",
+        "rating": 8.6,
+        "url": "https://www.imdb.com/title/tt0120815"
+    }
+]

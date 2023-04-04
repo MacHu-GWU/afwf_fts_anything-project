@@ -1,111 +1,191 @@
 # -*- coding: utf-8 -*-
 
-"""
-This module is an integration layer put full-text-search-settings, dataset,
-whoosh schema all together.
-"""
+import typing as T
+import os
+import json
 
 import attr
-import shutil
 from attrs_mate import AttrsClass
-from whoosh import index, qparser
-from pathlib_mate import PathCls as Path
-from superjson import json
-from .constant import ALFRED_FTS
-from .fts_setting import Setting
+from pathlib_mate import Path
+import requests
+from whoosh import fields, qparser, query, sorting
+from whoosh.index import open_dir, create_in, FileIndex
+
+from .paths import dir_project_home, dir_cache
+from .compat import cached_property
+from .cache import cache
+from .setting import Setting
 
 
 @attr.s
-class DataSet(AttrsClass):
+class Dataset(AttrsClass):
     """
-    Represent the dataset you want to search.
+    A Dataset is a search scope of your full-text-search application.
 
-    :param data: dict list.
-    :param columns: list.
+    It has to have a unique name, which is used in the Alfred Workflow script filter
+    command to locate the setting and the data.
 
-    :param title_field: str, the field used for alfred workflow item title.
-    :param subtitle_field: str, the field used for alfred workflow item subtitle.
-    :param arg_field: str, the field used for alfred workflow item argument.
-    :param autocomplete_field: str, the field used for alfred workflow item autocomplete.
+    It has to have three files in the project home directory ``${HOME}/.alfred-afwf/afwf_fts_anything/``:
+
+    - ``${name}-setting.json``: the setting file, which contains the search setting of this dataset.
+    - ``${name}-data.json``: the data file, which contains the data you want to search.
+        this file can be user generated, or downloaded from the internet
+    - ``${name}-whoosh_index``: the index directory, which contains the whoosh index of this dataset.
+        the folder is automatically generated based on your setting and data.
+    - ``${name}-icon``: the icon directory, which contains the icon for Alfred.
     """
-    name = attr.ib(default=None)
-    data = attr.ib(default=None)
-    setting = attr.ib(
-        converter=Setting.from_dict,
-        validator=attr.validators.optional(
-            attr.validators.instance_of(Setting),
-        ),
-        factory=Setting,
+
+    name: str = AttrsClass.ib_str()
+    path_setting: T.Optional[Path] = AttrsClass.ib_generic(
+        type_=Path, nullable=True, default=None
     )
-    schema_cache = attr.ib(default=None)
+    path_data: T.Optional[Path] = AttrsClass.ib_generic(
+        type_=Path, nullable=True, default=None
+    )
+    dir_index: T.Optional[Path] = AttrsClass.ib_generic(
+        type_=Path, nullable=True, default=None
+    )
+    dir_icon: T.Optional[Path] = AttrsClass.ib_generic(
+        type_=Path, nullable=True, default=None
+    )
 
-    def update_data_from_file(self):
-        if self.data is None:
-            data_file = self.get_data_file_path()
-            with open(data_file.abspath, "rb") as f:
-                self.data = json.loads(f.read().decode(
-                    "utf-8"), ignore_comments=True)
+    @property
+    def _path_setting(self) -> Path:
+        """
+        The path to the setting file.
+        """
+        if self.path_setting is not None:
+            return self.path_setting
+        return dir_project_home / f"{self.name}-setting.json"
 
-    def update_setting_from_file(self):
-        if not self.setting.columns:
-            setting_file = self.get_setting_file_path()
-            with open(setting_file.abspath, "rb") as f:
-                setting_data = json.loads(
-                    f.read().decode("utf-8"), ignore_comments=True)
-                self.setting = Setting(**setting_data)
+    @property
+    def _path_data(self) -> Path:
+        """
+        The path to the data file.
+        """
+        if self.path_data is not None:
+            return self.path_data
+        return dir_project_home / f"{self.name}-data.json"
 
-    def get_data_file_path(self):
-        return Path(ALFRED_FTS, "{}.json".format(self.name))
+    @property
+    def _dir_index(self) -> Path:
+        """
+        The path to the whoosh index directory.
+        """
+        if self.dir_index is not None:
+            return self.dir_index
+        return dir_project_home / f"{self.name}-whoosh_index"
 
-    def get_setting_file_path(self):
-        return Path(ALFRED_FTS, "{}-setting.json".format(self.name))
+    @property
+    def _dir_icon(self) -> Path:
+        """
+        The path to the icon directory.
+        """
+        if self.dir_icon is not None:
+            return self.dir_icon
+        return dir_project_home / f"{self.name}-icon"
 
-    def get_index_dir_path(self):
-        return Path(ALFRED_FTS, "{}-whoosh_index".format(self.name))
+    @cached_property
+    def setting(self) -> Setting:
+        """
+        Access the setting object that is parsed from the setting file.
+        """
+        return Setting.from_json_file(self._path_setting)
 
-    def get_schema(self):
-        if self.schema_cache is None:
-            self.schema_cache = self.setting.create_whoosh_schema()
-        return self.schema_cache
+    @cached_property
+    def schema(self) -> fields.Schema:
+        """
+        Access the whoosh schema based on the setting.
+        """
+        return self.setting.create_whoosh_schema()
 
-    def get_index(self):
-        index_dir = self.get_index_dir_path()
-        if index_dir.exists():
-            idx = index.open_dir(index_dir.abspath)
+    def download_data(self): # pragma: no cover
+        """
+        Download the data from the internet if
+        """
+        if self.setting.data_url is None:
+            raise ValueError(
+                "You cannot download data because 'data_url' "
+                f"is not defined in the setting file '{self._path_setting}'."
+            )
+        response = requests.get(self.setting.data_url)
+
+        # write to temp file first, then move to the data file for atomic write
+        path_temp = Path(str(self._path_data) + ".temp")
+        path_temp.write_text(response.text)
+        path_temp.moveto(new_abspath=self._path_data, overwrite=True)
+
+    def get_data(self) -> T.List[T.Dict[str, T.Any]]:
+        """
+        Get the data from the data file. If data file does not exist, download it first.
+        """
+        if not self._path_data.exists(): # pragma: no cover
+            self.download_data()
+        return json.loads(self._path_data.read_text())
+
+    def get_index(self) -> FileIndex:
+        if self._dir_index.exists():
+            idx = open_dir(self._dir_index.abspath)
         else:
-            schema = self.get_schema()
-            index_dir.mkdir()
-            idx = index.create_in(dirname=index_dir.abspath, schema=schema)
+            self._dir_index.mkdir(parents=True, exist_ok=True)
+            idx = create_in(dirname=self._dir_index.abspath, schema=self.schema)
         return idx
-
-    def build_index(self, idx):
-        """
-        Build Whoosh Index, add document.
-        """
-        self.update_data_from_file()
-        writer = idx.writer()
-        for row in self.data:
-            doc = {c.name: row.get(c.name) for c in self.setting.columns}
-            writer.add_document(**doc)
-        writer.commit()
 
     def remove_index(self):
         """
-        Remove whoosh index dir.
+        Remove the whoosh index diretory.
         """
-        shutil.rmtree(self.get_index_dir_path().abspath)
+        self._dir_index.remove_if_exists()
 
-    def search(self, query_str, limit=20):
-        """
-        Use full text search for result.
-        """
-        schema = self.get_schema()
+    def build_index(
+        self,
+        multi_thread: bool = False,
+        rebuild: bool = False,
+    ):
+        if rebuild is True:
+            self.remove_index()
         idx = self.get_index()
-        query = qparser.MultifieldParser(
-            self.setting.searchable_columns,
-            schema=schema,
-        ).parse(query_str)
+        if multi_thread:  # pragma: no cover
+            writer = idx.writer(procs=os.cpu_count())
+        else:
+            writer = idx.writer()
+
+        for row in self.get_data():
+            doc = {
+                field_name: row.get(field_name)
+                for field_name in self.setting.field_names
+            }
+            writer.add_document(**doc)
+        writer.commit()
+
+    def clear_cache(self): # pragma: no cover
+        dir_cache.remove_if_exists()
+
+    @cache.memoize(expire=5)
+    def search(self, query_str, limit=20) -> T.List[dict]:
+        """
+        Use full-text search for result.
+        """
+        idx = self.get_index()
+        q = query.And(
+            [
+                qparser.MultifieldParser(
+                    self.setting.searchable_fields,
+                    schema=self.schema,
+                ).parse(query_str),
+            ]
+        )
+        multi_facet = sorting.MultiFacet()
+        for field_name in self.setting.sortable_fields:
+            field = self.setting.fields_mapper[field_name]
+            multi_facet.add_field(field_name, reverse=not field.is_sort_ascending)
         with idx.searcher() as searcher:
-            result = [hit.fields()
-                      for hit in searcher.search(query, limit=limit)]
-        return result
+            doc_list = [
+                hit.fields()
+                for hit in searcher.search(
+                    q,
+                    sortedby=multi_facet,
+                    limit=limit,
+                )
+            ]
+        return doc_list

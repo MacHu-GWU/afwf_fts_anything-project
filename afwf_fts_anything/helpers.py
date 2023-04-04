@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import hashlib
+import typing as T
 
 
-def md5_file(path):  # pragma: no cover
-    """
-    Get md5 check sum of a file.
-    """
-    m = hashlib.md5()
-    with open(path, "rb") as f:
-        b = f.read()
-        m.update(b)
-    return m.hexdigest()
-
-
-def is_no_overlap(*set_list):
+def is_no_overlap(list_of_container: T.List[list]) -> bool:
     """
     Test if there's no common item in several set.
     """
-    return sum([len(s) for s in set_list]) == len(set.union(*[set(s) for s in set_list]))
+    return (
+        sum([len(container) for container in list_of_container])
+        == len(set.union(*[set(container) for container in list_of_container]))
+    )

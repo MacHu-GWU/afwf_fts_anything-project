@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import pytest
-from afwf_fts_anything import helpers
+
+from afwf_fts_anything.helpers import is_no_overlap
 
 
 def test_is_no_overlap():
-    assert helpers.is_no_overlap([1, 2], [3, 4])
-    assert helpers.is_no_overlap([1, 2], [2, 3]) is False
+    assert is_no_overlap([[1, 2], [3, 4]]) is True
+    assert is_no_overlap([[1, 2], [2, 3]]) is False
 
 
 if __name__ == "__main__":
-    import os
+    from afwf_fts_anything.tests import run_cov_test
 
-    basename = os.path.basename(__file__)
-    pytest.main([basename, "-s", "--tb=native"])
+    run_cov_test(__file__, "afwf_fts_anything.helpers", preview=False)
