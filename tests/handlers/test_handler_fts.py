@@ -3,7 +3,7 @@
 import pytest
 
 from afwf_fts_anything.exc import BuildIndexError
-from afwf_fts_anything.paths import path_settings, path_data, dir_index, dir_icon
+from afwf_fts_anything.paths import path_setting, path_data, dir_index, dir_icon
 from afwf_fts_anything.dataset import Dataset
 from afwf_fts_anything.handlers.fts import handler
 
@@ -12,7 +12,7 @@ class TestHandler:
     def test_build_index(self):
         dataset = Dataset(
             name="movie",
-            path_setting=path_settings,
+            path_setting=path_setting,
             path_data=path_data,
             dir_index=dir_index,
             dir_icon=dir_icon,
@@ -21,7 +21,7 @@ class TestHandler:
 
         dataset = Dataset(
             name="not-exists",
-            path_setting=path_settings,
+            path_setting=path_setting,
             path_data=path_data.change("not-exists-data.json"),
             dir_index=dir_index.change(new_basename="not-exists"),
         )
@@ -47,24 +47,32 @@ class TestHandler:
         sf = handler.main(
             dataset_name="movie",
             query_str="",
+            path_setting=path_setting,
+            path_data=path_data,
         )
         assert sf.items[0].title == "Full text search 'movie' dataset"
 
         sf = handler.main(
             dataset_name="movie",
             query_str="?",
+            path_setting=path_setting,
+            path_data=path_data,
         )
         assert sf.items[0].title == "Open 'movie' dataset folder location"
 
         sf = handler.main(
             dataset_name="movie",
             query_str="God Father",
+            path_setting=path_setting,
+            path_data=path_data,
         )
         assert sf.items[0].arg == "2"
 
         sf = handler.main(
             dataset_name="movie",
             query_str="this movie doesn't exists, don't ever try it",
+            path_setting=path_setting,
+            path_data=path_data,
         )
         assert sf.items[0].title.startswith("No result found for query:")
 

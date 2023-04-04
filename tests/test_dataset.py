@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from afwf_fts_anything.paths import path_settings, path_data, dir_index, dir_icon
+from afwf_fts_anything.paths import path_setting, path_data, dir_index, dir_icon
 from afwf_fts_anything.dataset import Dataset
 
 
@@ -15,7 +15,7 @@ class TestDataset:
     def test_indexing(self):
         dataset = Dataset(
             name="movie",
-            path_setting=path_settings,
+            path_setting=path_setting,
             path_data=path_data,
             dir_index=dir_index,
             dir_icon=dir_icon,

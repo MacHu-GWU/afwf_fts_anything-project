@@ -31,7 +31,7 @@ path_cov_index_html = dir_htmlcov / "index.html"
 dir_unit_test = dir_project_root / "tests"
 dir_int_test = dir_project_root / "tests_int"
 
-path_settings = dir_unit_test / "movie-setting.json"
+path_setting = dir_unit_test / "movie-setting.json"
 path_data = dir_unit_test / "movie-data.json"
 dir_index = dir_unit_test / "movie-whoosh_index"
 dir_icon = dir_unit_test / "movie-icon"
