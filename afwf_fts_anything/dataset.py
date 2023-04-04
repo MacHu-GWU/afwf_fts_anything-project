@@ -100,7 +100,7 @@ class Dataset(AttrsClass):
         """
         return self.setting.create_whoosh_schema()
 
-    def download_data(self): # pragma: no cover
+    def download_data(self):  # pragma: no cover
         """
         Download the data from the internet if
         """
@@ -124,8 +124,10 @@ class Dataset(AttrsClass):
             # move the data file to the right location
             for path in dir_temp.select_by_ext(".json"):
                 path.moveto(
-                    new_abspath=path_temp.parent.joinpath(path.relative_to(dir_temp)).abspath,
-                    overwrite=True
+                    new_abspath=path_temp.parent.joinpath(
+                        path.relative_to(dir_temp)
+                    ).abspath,
+                    overwrite=True,
                 )
             # delete the tmp/ folder
             dir_temp.remove_if_exists()
@@ -134,12 +136,11 @@ class Dataset(AttrsClass):
             path_temp.write_text(response.text)
             path_temp.moveto(new_abspath=self._path_data, overwrite=True)
 
-
     def get_data(self) -> T.List[T.Dict[str, T.Any]]:
         """
         Get the data from the data file. If data file does not exist, download it first.
         """
-        if not self._path_data.exists(): # pragma: no cover
+        if not self._path_data.exists():  # pragma: no cover
             self.download_data()
         return json.loads(self._path_data.read_text())
 
@@ -179,7 +180,7 @@ class Dataset(AttrsClass):
             writer.add_document(**doc)
         writer.commit()
 
-    def clear_cache(self): # pragma: no cover
+    def clear_cache(self):  # pragma: no cover
         dir_cache.remove_if_exists()
 
     @cache.memoize(expire=5)
@@ -196,17 +197,17 @@ class Dataset(AttrsClass):
                 ).parse(query_str),
             ]
         )
-        multi_facet = sorting.MultiFacet()
-        for field_name in self.setting.sortable_fields:
-            field = self.setting.fields_mapper[field_name]
-            multi_facet.add_field(field_name, reverse=not field.is_sort_ascending)
+        search_kwargs = dict(
+            q,
+            limit=limit,
+        )
+        if len(self.setting.sortable_fields):
+            multi_facet = sorting.MultiFacet()
+            for field_name in self.setting.sortable_fields:
+                field = self.setting.fields_mapper[field_name]
+                multi_facet.add_field(field_name, reverse=not field.is_sort_ascending)
+            search_kwargs["sortedby"] = multi_facet
+
         with idx.searcher() as searcher:
-            doc_list = [
-                hit.fields()
-                for hit in searcher.search(
-                    q,
-                    sortedby=multi_facet,
-                    limit=limit,
-                )
-            ]
+            doc_list = [hit.fields() for hit in searcher.search(**search_kwargs)]
         return doc_list
