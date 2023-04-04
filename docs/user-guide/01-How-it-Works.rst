@@ -73,7 +73,7 @@ Field is the basic unit of search. You can define how you want the data to be ma
 :is_sortable <bool>: is the field will be used for sorting? If True, the field has to be stored.
 :is_sort_ascending <bool>: is the field will be used for sort ascending?
 
-.. admonition:: BY THE WAY
+**NOTE**
 
     only one of ``type_is_ngram``, ``type_is_phrase``, ``type_is_keyword`` can be True.
 
@@ -225,12 +225,19 @@ In the setting, we defined that:
 
 Alfred Workflow Configuration
 ------------------------------------------------------------------------------
-Below is a sample workflow diagram. The left is the "Script Filter" definition, the right side has "Open File", "Reveal in Finder" and "Open Url".
+Below is a sample workflow diagram. The left is the "Script Filter" definition, the right side has "Open File", "Reveal in Finder" and "Open Url". When you select an item and hit ``Enter``, the arg, which is the url, will be passed to the "Open Url" action and open the IMDB movie url in your default browser.
 
-.. note::
+.. image:: ./images/alfred-workflow-diagram.png
+
+**NOTE**
 
     The "Open File" and "Reveal in Finder" are `afwf Framework <https://afwf.readthedocs.io/index.html>`_ related components. Although the ``afwf_fts_anything`` is based on ``afwf Framework``, but they are not related to ``afwf_fts_anything``.
 
-.. image:: ./images/alfred-workflow-diagram.png
+Below is a sample workflow configuration. You need to know:
+
+- ``fts movie`` is the keyword to trigger this workflow.
+- ``Argument Optional`` means that the fts takes either no argument or a search query.
+- ``Language`` has to be a bash, because we use bash to call Python script.
+- ``Script`` is the python command to run this workflow, ``/usr/bin/python3 main.py 'fts movie {query}'`` means that we use ``/usr/bin/python3`` to run this workflow, and the dataset name is ``movie``. If you want to use a custom Python interpreter, you can change it to ``/path/to/your/python``. But the Python interpreter has to be Python3.7+. Also, if you created your own dataset and setting, you could change it to ``/usr/bin/python3 main.py 'fts your_datset_name {query}'``.
 
 .. image:: ./images/alfred-workflow-configuration.png
