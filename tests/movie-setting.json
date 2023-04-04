@@ -31,6 +31,10 @@
             "type_is_numeric": true,
             "is_sortable": true,
             "is_sort_ascending": false
+        },
+        {
+            "name": "url",
+            "type_is_store": true
         }
     ],
     "title_field": "{title} ({genres}) rate {rating}", // title on Alfred drop down menu
