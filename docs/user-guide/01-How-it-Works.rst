@@ -73,7 +73,7 @@ Field is the basic unit of search. You can define how you want the data to be ma
 :is_sortable <bool>: is the field will be used for sorting? If True, the field has to be stored.
 :is_sort_ascending <bool>: is the field will be used for sort ascending?
 
-.. note::
+.. admonition:: BY THE WAY
 
     only one of ``type_is_ngram``, ``type_is_phrase``, ``type_is_keyword`` can be True.
 
@@ -220,3 +220,17 @@ In the setting, we defined that:
 - we want to use the string template ``{title}`` to construct the autocomplete.
 - we want to use a custom icon image for search result.
 
+.. image:: ./images/alfred-item.png
+
+
+Alfred Workflow Configuration
+------------------------------------------------------------------------------
+Below is a sample workflow diagram. The left is the "Script Filter" definition, the right side has "Open File", "Reveal in Finder" and "Open Url".
+
+.. note::
+
+    The "Open File" and "Reveal in Finder" are `afwf Framework <https://afwf.readthedocs.io/index.html>`_ related components. Although the ``afwf_fts_anything`` is based on ``afwf Framework``, but they are not related to ``afwf_fts_anything``.
+
+.. image:: ./images/alfred-workflow-diagram.png
+
+.. image:: ./images/alfred-workflow-configuration.png
