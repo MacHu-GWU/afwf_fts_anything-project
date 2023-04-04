@@ -3,6 +3,7 @@
 import typing as T
 import os
 import json
+from zipfile import ZipFile
 
 import attr
 from attrs_mate import AttrsClass
@@ -111,9 +112,28 @@ class Dataset(AttrsClass):
         response = requests.get(self.setting.data_url)
 
         # write to temp file first, then move to the data file for atomic write
-        path_temp = Path(str(self._path_data) + ".temp")
-        path_temp.write_text(response.text)
-        path_temp.moveto(new_abspath=self._path_data, overwrite=True)
+        if self.setting.data_url.endswith(".zip"):
+            # download to *.temp.zip first
+            path_temp = Path(str(self._path_data) + ".temp.zip")
+            path_temp.write_bytes(response.content)
+            # unzip to tmp/ folder
+            dir_temp = path_temp.change(new_basename="tmp")
+            dir_temp.mkdir_if_not_exists()
+            with ZipFile(path_temp.abspath, "r") as zf:
+                zf.extractall(dir_temp.abspath)
+            # move the data file to the right location
+            for path in dir_temp.select_by_ext(".json"):
+                path.moveto(
+                    new_abspath=path_temp.parent.joinpath(path.relative_to(dir_temp)).abspath,
+                    overwrite=True
+                )
+            # delete the tmp/ folder
+            dir_temp.remove_if_exists()
+        else:
+            path_temp = Path(str(self._path_data) + ".temp")
+            path_temp.write_text(response.text)
+            path_temp.moveto(new_abspath=self._path_data, overwrite=True)
+
 
     def get_data(self) -> T.List[T.Dict[str, T.Any]]:
         """
@@ -139,6 +159,7 @@ class Dataset(AttrsClass):
 
     def build_index(
         self,
+        data: T.List[T.Dict[str, T.Any]],
         multi_thread: bool = False,
         rebuild: bool = False,
     ):
@@ -150,7 +171,7 @@ class Dataset(AttrsClass):
         else:
             writer = idx.writer()
 
-        for row in self.get_data():
+        for row in data:
             doc = {
                 field_name: row.get(field_name)
                 for field_name in self.setting.field_names

@@ -20,7 +20,7 @@ class TestDataset:
             dir_index=dir_index,
             dir_icon=dir_icon,
         )
-        dataset.build_index(rebuild=True)
+        dataset.build_index(data=dataset.get_data(), rebuild=True)
 
         # cache should work
         for _ in range(3):
