@@ -1,0 +1,3 @@
+afwf_fts_anything is an Alfred Workflow allows you to do full-text search on your own dataset, and use the result to open url, open file, run script, or basically do anything. Typically, you need to setup expansive elasticsearch server, learn how to do data ingestion, learn search API, and build your own Alfred workflow. afwf_fts_anything removes all the blockers and let you just focus on your dataset and search configuration.
+
+See more at: https://github.com/MacHu-GWU/afwf_fts_anything-project
