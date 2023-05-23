@@ -15,7 +15,7 @@ diskcache = "5.4.0"
 sqlitedict = "2.1.0"
 whoosh = "2.7.4"
 superjson = "1.0.2"
-requests = "2.27.1"
+requests = "2.31.0"
 cached-property = { version = "1.5.2", markers = "python_version <= '3.7'" }
 
 
