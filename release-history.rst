@@ -15,6 +15,17 @@ Backlog
 **Miscellaneous**
 
 
+1.2.1 (2024-01-02)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Add ``ngram_words`` index type. It tokenizes the text into words before index. It is more accurate than ``ngram`` if you have delimiter in your text.
+
+**Minor Improvements**
+
+- Fix a bug that it also open the url even it is not a valid url item.
+
+
 1.1.1 (2023-04-03)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
