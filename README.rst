@@ -133,7 +133,7 @@ Sample search settings (content of ``movie-setting.json``):
             {
                 "name": "title",
                 "type_is_store": true,
-                "type_is_ngram": true,
+                "type_is_ngram_words": true,
                 "ngram_maxsize": 10,
                 "ngram_minsize": 2,
                 "weight": 2.0
