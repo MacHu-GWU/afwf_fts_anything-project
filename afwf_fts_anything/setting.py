@@ -34,6 +34,9 @@ class Field(AttrsClass):
     :param type_is_ngram: if True, the value is index using ngram. It matches
         any character shorter than N characters.
         https://whoosh.readthedocs.io/en/latest/ngrams.html.
+    :param type_is_ngram_words: similar to type_is_ngram, but it tokenizes
+        text into words before index. It matches any character shorter than N characters.
+        https://whoosh.readthedocs.io/en/latest/api/fields.html#whoosh.fields.NGRAMWORDS.
     :param type_is_phrase: if True, the value is indexed using phrase. Only
         case-insensitive phrase will be matched. See
         https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
@@ -58,6 +61,7 @@ class Field(AttrsClass):
     name: str = attr.ib()
     type_is_store: bool = attr.ib(default=False)
     type_is_ngram: bool = attr.ib(default=False)
+    type_is_ngram_words: bool = attr.ib(default=False)
     type_is_phrase: bool = attr.ib(default=False)
     type_is_keyword: bool = attr.ib(default=False)
     type_is_numeric: bool = attr.ib(default=False)
@@ -74,6 +78,7 @@ class Field(AttrsClass):
         flag = sum(
             [
                 self.type_is_ngram,
+                self.type_is_ngram_words,
                 self.type_is_phrase,
                 self.type_is_keyword,
                 self.type_is_numeric,
@@ -84,7 +89,7 @@ class Field(AttrsClass):
         else:
             msg = (
                 f"you have to specify one and only one index type for column {self.name!r}, "
-                f"valid types are: ngram, phrase, keyword, numeric."
+                f"valid types are: ngram, ngram_words, phrase, keyword, numeric."
             )
             raise MalformedSettingError(msg)
 
@@ -192,7 +197,7 @@ class Setting(AttrsClass):
 
     @cached_property
     def ngram_fields(self) -> T.List[str]:
-        return [field.name for field in self.fields if field.type_is_ngram]
+        return [field.name for field in self.fields if field.type_is_ngram or field.type_is_ngram_words]
 
     @cached_property
     def phrase_fields(self) -> T.List[str]:
@@ -243,6 +248,14 @@ class Setting(AttrsClass):
         for field in self.fields:
             if field.type_is_ngram:
                 whoosh_field = whoosh.fields.NGRAM(
+                    stored=field.type_is_store,
+                    minsize=field.ngram_minsize,
+                    maxsize=field.ngram_maxsize,
+                    field_boost=field.weight,
+                    sortable=field.is_sortable,
+                )
+            elif field.type_is_ngram_words:
+                whoosh_field = whoosh.fields.NGRAMWORDS(
                     stored=field.type_is_store,
                     minsize=field.ngram_minsize,
                     maxsize=field.ngram_maxsize,

@@ -72,12 +72,14 @@ class Handler(afwf.Handler):
         doc_list = dataset.search(query_str)
         setting = dataset.setting
         for doc in doc_list:
+            arg = setting.format_arg(doc)
             item = afwf.Item(
                 title=setting.format_title(doc),
                 subtitle=setting.format_subtitle(doc),
-                arg=setting.format_arg(doc),
+                arg=arg,
                 autocomplete=setting.format_autocomplete(doc),
             )
+            item.open_url(url=arg)
             icon = setting.format_icon(doc)
             if icon is not None:
                 # use absolute path

@@ -4,8 +4,6 @@
 <dict>
 	<key>bundleid</key>
 	<string>MacHu-GWU.afwf_fts_anything</string>
-	<key>category</key>
-	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
 		<key>27D78147-51C3-4E72-B805-0E11B1F3A6D8</key>
@@ -47,7 +45,7 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</string>
+				<string>EA372964-D319-44BA-AA38-CFB7EAEEF180</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -61,6 +59,21 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>06224816-79FA-4D91-A314-0C8E6756D80B</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>5EA742F9-1BBA-4433-8613-BFBFF0D0E462</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>EA372964-D319-44BA-AA38-CFB7EAEEF180</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -227,7 +240,7 @@
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{query}</string>
+				<string>{var:open_url_arg}</string>
 				<key>utf8</key>
 				<true/>
 			</dict>
@@ -235,6 +248,36 @@
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
 			<string>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string>{var:open_url}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>y</string>
+						<key>outputlabel</key>
+						<string></string>
+						<key>uid</key>
+						<string>5EA742F9-1BBA-4433-8613-BFBFF0D0E462</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>else</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>EA372964-D319-44BA-AA38-CFB7EAEEF180</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -250,42 +293,49 @@ See more at: https://github.com/MacHu-GWU/afwf_fts_anything-project</string>
 			<key>xpos</key>
 			<integer>740</integer>
 			<key>ypos</key>
-			<integer>150</integer>
+			<integer>115</integer>
 		</dict>
 		<key>0954010F-CD86-448F-A32A-086CF90100D2</key>
 		<dict>
 			<key>xpos</key>
 			<integer>740</integer>
 			<key>ypos</key>
-			<integer>45</integer>
+			<integer>10</integer>
 		</dict>
 		<key>27D78147-51C3-4E72-B805-0E11B1F3A6D8</key>
 		<dict>
 			<key>xpos</key>
-			<integer>585</integer>
+			<integer>545</integer>
 			<key>ypos</key>
-			<integer>65</integer>
+			<integer>35</integer>
 		</dict>
 		<key>55DEB335-2FC6-4FF9-8482-F949B27BFEE9</key>
 		<dict>
 			<key>xpos</key>
-			<integer>30</integer>
+			<integer>35</integer>
 			<key>ypos</key>
-			<integer>45</integer>
+			<integer>10</integer>
 		</dict>
 		<key>92ADA757-06DC-428F-AA48-7C16FD4BE487</key>
 		<dict>
 			<key>xpos</key>
-			<integer>585</integer>
+			<integer>545</integer>
 			<key>ypos</key>
-			<integer>170</integer>
+			<integer>140</integer>
 		</dict>
 		<key>B86DCC60-B7BA-4FCB-A766-0282D4F57AEF</key>
 		<dict>
 			<key>xpos</key>
 			<integer>740</integer>
 			<key>ypos</key>
-			<integer>255</integer>
+			<integer>220</integer>
+		</dict>
+		<key>EA372964-D319-44BA-AA38-CFB7EAEEF180</key>
+		<dict>
+			<key>xpos</key>
+			<integer>545</integer>
+			<key>ypos</key>
+			<integer>245</integer>
 		</dict>
 	</dict>
 	<key>variablesdontexport</key>

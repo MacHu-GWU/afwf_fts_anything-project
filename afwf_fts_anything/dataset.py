@@ -35,20 +35,13 @@ class Dataset(AttrsClass):
         the folder is automatically generated based on your setting and data.
     - ``${name}-icon``: the icon directory, which contains the icon for Alfred.
     """
-
+    # fmt: off
     name: str = AttrsClass.ib_str()
-    path_setting: T.Optional[Path] = AttrsClass.ib_generic(
-        type_=Path, nullable=True, default=None
-    )
-    path_data: T.Optional[Path] = AttrsClass.ib_generic(
-        type_=Path, nullable=True, default=None
-    )
-    dir_index: T.Optional[Path] = AttrsClass.ib_generic(
-        type_=Path, nullable=True, default=None
-    )
-    dir_icon: T.Optional[Path] = AttrsClass.ib_generic(
-        type_=Path, nullable=True, default=None
-    )
+    path_setting: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
+    path_data: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
+    dir_index: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
+    dir_icon: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
+    # fmt: on
 
     @property
     def _path_setting(self) -> Path:

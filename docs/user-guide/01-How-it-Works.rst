@@ -63,6 +63,7 @@ Field is the basic unit of search. You can define how you want the data to be ma
 :name <str>: the name of the field
 :type_is_store <bool>: if True, the value is only stored but not indexed for search. Usually it can be used to dynamically construct value for argument (the action when you press enter), or for auto complete (the action when you press tab)
 :type_is_ngram <bool>: if True, the value is index using ngram. It matches any character shorter than N characters. https://whoosh.readthedocs.io/en/latest/ngrams.html.
+:type_is_ngram_words <bool>: similar to type_is_ngram, but it tokenizes text into words before index. It matches any character shorter than N characters. https://whoosh.readthedocs.io/en/latest/api/fields.html#whoosh.fields.NGRAMWORDS.
 :type_is_phrase <bool>: if True, the value is indexed using phrase. Only case-insensitive phrase will be matched. See https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
 :type_is_keyword <bool>: if True, the value is indexed using keyword. The keyword has to be exactly matched. See https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
 :type_is_numeric: if True, the value is indexed using number. The number field is not used for searching, it is only used for sorting. See https://whoosh.readthedocs.io/en/latest/schema.html#built-in-field-types
