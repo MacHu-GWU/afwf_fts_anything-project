@@ -17,6 +17,7 @@ from sayt2.api import (
     NumericField,
     DatetimeField,
     BooleanField,
+    SortKey,
 )
 
 from .exc import MalformedSettingError
@@ -40,6 +41,7 @@ class Setting(BaseModel):
     """
 
     fields: list[T_Field]
+    sort: list[SortKey] | None = None
     title_field: str | None = None
     subtitle_field: str | None = None
     arg_field: str | None = None

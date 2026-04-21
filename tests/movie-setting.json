@@ -1,46 +1,17 @@
 {
-    // define how you want to search this dataset
     "fields": [
-        {
-            "name": "movie_id",
-            "type_is_store": true
-        },
-        {
-            "name": "title",
-            "type_is_store": true,
-            "type_is_ngram": true,
-            "ngram_maxsize": 10,
-            "ngram_minsize": 2,
-            "weight": 2.0
-        },
-        {
-            "name": "description",
-            "type_is_store": true,
-            "type_is_phrase": true
-        },
-        {
-            "name": "genres",
-            "type_is_store": true,
-            "type_is_keyword": true,
-            "keyword_lowercase": true,
-            "weight": 1.5
-        },
-        {
-            "name": "rating",
-            "type_is_store": true,
-            "type_is_numeric": true,
-            "is_sortable": true,
-            "is_sort_ascending": false
-        },
-        {
-            "name": "url",
-            "type_is_store": true
-        }
+        {"type": "stored", "name": "movie_id"},
+        {"type": "ngram", "name": "title", "min_gram": 2, "max_gram": 10, "boost": 2.0},
+        {"type": "text", "name": "description"},
+        {"type": "text", "name": "genres", "boost": 1.5},
+        {"type": "numeric", "name": "rating", "kind": "f64", "indexed": true, "fast": true},
+        {"type": "stored", "name": "url"}
     ],
+    "sort": [{"name": "rating", "descending": true}],
     "data_url": "https://github.com/MacHu-GWU/afwf_fts_anything-project/releases/download/1.1.1/movie-data.json.zip",
-    "title_field": "{title} ({genres}) rate {rating}", // title on Alfred drop down menu
-    "subtitle_field": "{description}", // subtitle on Alfred drop down menu
-    "arg_field": "{movie_id}", // argument for other workflow component
-    "autocomplete_field": "{title}", // tab auto complete behavior
+    "title_field": "{title} ({genres}) rate {rating}",
+    "subtitle_field": "{description}",
+    "arg_field": "{movie_id}",
+    "autocomplete_field": "{title}",
     "icon_field": "movie-icon.png"
 }

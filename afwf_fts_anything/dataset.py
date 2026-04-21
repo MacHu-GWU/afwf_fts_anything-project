@@ -1,206 +1,187 @@
 # -*- coding: utf-8 -*-
 
-import typing as T
-import os
+"""
+This module implements the Dataset class, which binds a Setting to a sayt2
+search index and provides build/search operations.
+"""
+
+import io
 import json
+import urllib.request
+from pathlib import Path
 from zipfile import ZipFile
+from functools import cached_property
 
-import attr
-from attrs_mate import AttrsClass
-from pathlib_mate import Path
-import requests
-from whoosh import fields, qparser, query, sorting
-from whoosh.index import open_dir, create_in, FileIndex
+from sayt2.api import DataSet as Sayt2DataSet
 
-from .paths import dir_project_home, dir_cache
-from .compat import cached_property
-from .cache import cache
+from .paths import path_enum
 from .setting import Setting
 
 
-@attr.s
-class Dataset(AttrsClass):
+class Dataset:
     """
-    A Dataset is a search scope of your full-text-search application.
+    A search dataset backed by a sayt2 index.
 
-    It has to have a unique name, which is used in the Alfred Workflow script filter
-    command to locate the setting and the data.
+    It is identified by a unique *name* and expects three resources in the
+    project-home directory (``~/.alfred-afwf/afwf_fts_anything/``):
 
-    It has to have three files in the project home directory ``${HOME}/.alfred-afwf/afwf_fts_anything/``:
+    - ``{name}-setting.json`` -- field schema and display config
+    - ``{name}-data.json`` -- the records to index
+    - ``{name}-index/`` -- the sayt2 index directory (auto-created)
 
-    - ``${name}-setting.json``: the setting file, which contains the search setting of this dataset.
-    - ``${name}-data.json``: the data file, which contains the data you want to search.
-        this file can be user generated, or downloaded from the internet
-    - ``${name}-whoosh_index``: the index directory, which contains the whoosh index of this dataset.
-        the folder is automatically generated based on your setting and data.
-    - ``${name}-icon``: the icon directory, which contains the icon for Alfred.
+    All four path arguments are optional overrides for testing or non-standard
+    layouts.
     """
-    # fmt: off
-    name: str = AttrsClass.ib_str()
-    path_setting: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
-    path_data: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
-    dir_index: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
-    dir_icon: T.Optional[Path] = AttrsClass.ib_generic(type_=Path, nullable=True, default=None)
-    # fmt: on
+
+    def __init__(
+        self,
+        name: str,
+        path_setting: Path | None = None,
+        path_data: Path | None = None,
+        dir_index: Path | None = None,
+        dir_icon: Path | None = None,
+    ):
+        self.name = name
+        self.path_setting = path_setting
+        self.path_data = path_data
+        self.dir_index = dir_index
+        self.dir_icon = dir_icon
+
+    # ------------------------------------------------------------------
+    # Resolved paths
+    # ------------------------------------------------------------------
 
     @property
     def _path_setting(self) -> Path:
-        """
-        The path to the setting file.
-        """
-        if self.path_setting is not None:
-            return self.path_setting
-        return dir_project_home / f"{self.name}-setting.json"
+        """Resolved path to the setting JSON file."""
+        return (
+            self.path_setting
+            or path_enum.dir_project_home / f"{self.name}-setting.json"
+        )
 
     @property
     def _path_data(self) -> Path:
-        """
-        The path to the data file.
-        """
-        if self.path_data is not None:
-            return self.path_data
-        return dir_project_home / f"{self.name}-data.json"
+        """Resolved path to the data JSON file."""
+        return self.path_data or path_enum.dir_project_home / f"{self.name}-data.json"
 
     @property
     def _dir_index(self) -> Path:
-        """
-        The path to the whoosh index directory.
-        """
-        if self.dir_index is not None:
-            return self.dir_index
-        return dir_project_home / f"{self.name}-whoosh_index"
+        """Resolved path to the sayt2 index directory."""
+        return self.dir_index or path_enum.dir_project_home / f"{self.name}-index"
 
     @property
     def _dir_icon(self) -> Path:
-        """
-        The path to the icon directory.
-        """
-        if self.dir_icon is not None:
-            return self.dir_icon
-        return dir_project_home / f"{self.name}-icon"
+        """Resolved path to the icon directory."""
+        return self.dir_icon or path_enum.dir_project_home / f"{self.name}-icon"
+
+    # ------------------------------------------------------------------
+    # Setting
+    # ------------------------------------------------------------------
 
     @cached_property
     def setting(self) -> Setting:
-        """
-        Access the setting object that is parsed from the setting file.
-        """
+        """Parsed :class:`.Setting` loaded from :attr:`_path_setting`."""
         return Setting.from_json_file(self._path_setting)
 
-    @cached_property
-    def schema(self) -> fields.Schema:
-        """
-        Access the whoosh schema based on the setting.
-        """
-        return self.setting.create_whoosh_schema()
+    # ------------------------------------------------------------------
+    # sayt2 DataSet factory
+    # ------------------------------------------------------------------
 
-    def download_data(self):  # pragma: no cover
-        """
-        Download the data from the internet if
-        """
-        if self.setting.data_url is None:
-            raise ValueError(
-                "You cannot download data because 'data_url' "
-                f"is not defined in the setting file '{self._path_setting}'."
-            )
-        response = requests.get(self.setting.data_url)
+    def _make_sayt2_dataset(self) -> Sayt2DataSet:
+        """Create a :class:`sayt2.DataSet` wired to this dataset's index and setting."""
+        return Sayt2DataSet(
+            dir_root=self._dir_index,
+            name=self.name,
+            fields=self.setting.fields,
+            downloader=self.get_data,
+            sort=self.setting.sort,
+        )
 
-        # write to temp file first, then move to the data file for atomic write
-        if self.setting.data_url.endswith(".zip"):
-            # download to *.temp.zip first
-            path_temp = Path(str(self._path_data) + ".temp.zip")
-            path_temp.write_bytes(response.content)
-            # unzip to tmp/ folder
-            dir_temp = path_temp.change(new_basename="tmp")
-            dir_temp.mkdir_if_not_exists()
-            with ZipFile(path_temp.abspath, "r") as zf:
-                zf.extractall(dir_temp.abspath)
-            # move the data file to the right location
-            for path in dir_temp.select_by_ext(".json"):
-                path.moveto(
-                    new_abspath=path_temp.parent.joinpath(
-                        path.relative_to(dir_temp)
-                    ).abspath,
-                    overwrite=True,
-                )
-            # delete the tmp/ folder
-            dir_temp.remove_if_exists()
-        else:
-            path_temp = Path(str(self._path_data) + ".temp")
-            path_temp.write_text(response.text)
-            path_temp.moveto(new_abspath=self._path_data, overwrite=True)
+    # ------------------------------------------------------------------
+    # Data access
+    # ------------------------------------------------------------------
 
-    def get_data(self) -> T.List[T.Dict[str, T.Any]]:
-        """
-        Get the data from the data file. If data file does not exist, download it first.
+    def get_data(self) -> list[dict]:
+        """Read records from the local data JSON file.
+
+        If the file does not exist, :meth:`download_data` is called first.
         """
         if not self._path_data.exists():  # pragma: no cover
             self.download_data()
         return json.loads(self._path_data.read_text())
 
-    def get_index(self) -> FileIndex:
-        if self._dir_index.exists():
-            idx = open_dir(self._dir_index.abspath)
-        else:
-            self._dir_index.mkdir(parents=True, exist_ok=True)
-            idx = create_in(dirname=self._dir_index.abspath, schema=self.schema)
-        return idx
+    # ------------------------------------------------------------------
+    # Download helpers (network-free parts are testable)
+    # ------------------------------------------------------------------
 
-    def remove_index(self):
+    @staticmethod
+    def _extract_json_from_zip(zip_bytes: bytes) -> bytes:
+        """Return the raw bytes of the first ``.json`` file found in *zip_bytes*."""
+        with ZipFile(io.BytesIO(zip_bytes)) as zf:
+            json_names = [n for n in zf.namelist() if n.endswith(".json")]
+            return zf.read(json_names[0])
+
+    def _save_data(
+        self,
+        raw_bytes: bytes,
+        is_zip: bool,
+    ) -> None:
+        """Write *raw_bytes* to :attr:`_path_data`, decompressing if *is_zip* is True."""
+        data_bytes = self._extract_json_from_zip(raw_bytes) if is_zip else raw_bytes
+        self._path_data.write_bytes(data_bytes)
+
+    def _fetch_url(self, url: str) -> bytes:  # pragma: no cover
+        """Download *url* and return raw bytes via :mod:`urllib`."""
+        with urllib.request.urlopen(url) as resp:
+            return resp.read()
+
+    def download_data(self) -> None:  # pragma: no cover
+        """Download the dataset from :attr:`Setting.data_url` and save it locally.
+
+        Raises :class:`ValueError` if ``data_url`` is not configured.
         """
-        Remove the whoosh index diretory.
-        """
-        self._dir_index.remove_if_exists()
+        url = self.setting.data_url
+        if url is None:
+            raise ValueError(
+                f"'data_url' is not defined in setting file '{self._path_setting}'."
+            )
+        raw = self._fetch_url(url)
+        self._save_data(raw, is_zip=url.endswith(".zip"))
+
+    # ------------------------------------------------------------------
+    # Index and search
+    # ------------------------------------------------------------------
 
     def build_index(
         self,
-        data: T.List[T.Dict[str, T.Any]],
-        multi_thread: bool = False,
+        data: list[dict] | None = None,
         rebuild: bool = False,
-    ):
-        if rebuild is True:
-            self.remove_index()
-        idx = self.get_index()
-        if multi_thread:  # pragma: no cover
-            writer = idx.writer(procs=os.cpu_count())
-        else:
-            writer = idx.writer()
+    ) -> int:
+        """Build the sayt2 search index from *data*.
 
-        for row in data:
-            doc = {
-                field_name: row.get(field_name)
-                for field_name in self.setting.field_names
-            }
-            writer.add_document(**doc)
-        writer.commit()
-
-    def clear_cache(self):  # pragma: no cover
-        dir_cache.remove_if_exists()
-
-    @cache.memoize(expire=5)
-    def search(self, query_str, limit=20) -> T.List[dict]:
+        :param data: records to index; if ``None`` the configured downloader is used.
+        :param rebuild: if ``True``, evict the query cache before building so
+            subsequent searches always reflect the new index.
+        :returns: number of documents indexed.
         """
-        Use full-text search for result.
-        """
-        idx = self.get_index()
-        q = query.And(
-            [
-                qparser.MultifieldParser(
-                    self.setting.searchable_fields,
-                    schema=self.schema,
-                ).parse(query_str),
-            ]
-        )
-        search_kwargs = dict(
-            q=q,
-            limit=limit,
-        )
-        if len(self.setting.sortable_fields):
-            multi_facet = sorting.MultiFacet()
-            for field_name in self.setting.sortable_fields:
-                field = self.setting.fields_mapper[field_name]
-                multi_facet.add_field(field_name, reverse=not field.is_sort_ascending)
-            search_kwargs["sortedby"] = multi_facet
+        ds = self._make_sayt2_dataset()
+        if rebuild:
+            ds._cache.evict_all()
+        count = ds.build_index(data=data)
+        ds.close()
+        return count
 
-        with idx.searcher() as searcher:
-            doc_list = [hit.fields() for hit in searcher.search(**search_kwargs)]
-        return doc_list
+    def search(
+        self,
+        query: str,
+        limit: int = 20,
+    ) -> list[dict]:
+        """Search the index and return matching documents as plain dicts.
+
+        :param query: Lucene-syntax query string.
+        :param limit: maximum number of results to return.
+        :returns: list of ``hit.source`` dicts ordered by relevance / sort key.
+        """
+        with self._make_sayt2_dataset() as ds:
+            result = ds.search(query, limit=limit)
+        return [hit.source for hit in result.hits]
