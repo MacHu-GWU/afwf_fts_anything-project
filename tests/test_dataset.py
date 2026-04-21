@@ -3,34 +3,24 @@
 import io
 import json
 import zipfile
+from pathlib import Path
 
-from afwf_fts_anything.paths import path_enum
 from afwf_fts_anything.dataset import Dataset
 
-dir_tests = path_enum.dir_unit_test
-path_setting = dir_tests / "movie-setting.json"
-path_data = dir_tests / "movie-data.json"
-dir_index = dir_tests / "movie-index"
-dir_icon = dir_tests / "movie-icon"
+dir_movie = Path(__file__).parent / "movie"
 
 
 def make_dataset() -> Dataset:
-    return Dataset(
-        name="movie",
-        path_setting=path_setting,
-        path_data=path_data,
-        dir_index=dir_index,
-        dir_icon=dir_icon,
-    )
+    return Dataset(name="movie", dir_root=dir_movie)
 
 
 class TestDatasetPaths:
-    def test_default_paths(self):
-        ds = Dataset(name="movie")
-        assert ds._path_setting.name == "movie-setting.json"
-        assert ds._path_data.name == "movie-data.json"
-        assert ds._dir_index.name == "movie-index"
-        assert ds._dir_icon.name == "movie-icon"
+    def test_computed_paths(self, tmp_path):
+        ds = Dataset(name="movie", dir_root=tmp_path)
+        assert ds.path_setting == tmp_path / "movie-setting.json"
+        assert ds.path_data == tmp_path / "movie-data.json"
+        assert ds.dir_index == tmp_path / "movie-index"
+        assert ds.get_icon("poster") == tmp_path / "icons" / "poster.png"
 
 
 class TestExtractJsonFromZip:
@@ -62,10 +52,10 @@ class TestExtractJsonFromZip:
 
 class TestSaveData:
     def test_save_plain(self, tmp_path):
-        ds = Dataset(name="test", path_data=tmp_path / "data.json")
+        ds = Dataset(name="test", dir_root=tmp_path)
         raw = b'[{"id": 1}]'
         ds._save_data(raw, is_zip=False)
-        assert json.loads(ds._path_data.read_bytes()) == [{"id": 1}]
+        assert json.loads(ds.path_data.read_bytes()) == [{"id": 1}]
 
     def test_save_zip(self, tmp_path):
         records = [{"id": 99}]
@@ -75,9 +65,9 @@ class TestSaveData:
             zf.writestr("data.json", raw_json)
         zip_bytes = buf.getvalue()
 
-        ds = Dataset(name="test", path_data=tmp_path / "data.json")
+        ds = Dataset(name="test", dir_root=tmp_path)
         ds._save_data(zip_bytes, is_zip=True)
-        assert json.loads(ds._path_data.read_bytes()) == records
+        assert json.loads(ds.path_data.read_bytes()) == records
 
 
 class TestDatasetIndexing:

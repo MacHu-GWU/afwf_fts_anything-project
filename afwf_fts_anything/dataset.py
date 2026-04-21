@@ -52,13 +52,17 @@ class Dataset:
     def dir_index(self) -> Path:
         return self.dir_root / f"{self.name}-index"
 
+    @cached_property
+    def dir_icons(self) -> Path:
+        return self.dir_root / "icons"
+
     # ------------------------------------------------------------------
     # Resource accessors
     # ------------------------------------------------------------------
 
     def get_icon(self, name: str) -> Path:
-        """Return the path to ``{dir_root}/icons/{name}.png``."""
-        return self.dir_root / "icons" / f"{name}.png"
+        """Return the path to ``{dir_icons}/{name}.png``."""
+        return self.dir_icons / f"{name}.png"
 
     def get_setting(self) -> Setting:
         """Load and return the :class:`.Setting` from disk (no cache)."""
