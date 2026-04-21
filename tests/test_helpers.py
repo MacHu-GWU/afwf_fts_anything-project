@@ -12,4 +12,8 @@ def test_is_no_overlap():
 if __name__ == "__main__":
     from afwf_fts_anything.tests import run_cov_test
 
-    run_cov_test(__file__, "afwf_fts_anything.helpers", preview=False)
+    run_cov_test(
+        __file__,
+        "afwf_fts_anything.helpers",
+        preview=False,
+    )
