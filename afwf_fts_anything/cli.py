@@ -3,7 +3,7 @@
 """
 CLI entry points for the ``afwf-fts-anything`` Alfred workflow.
 
-Implementations live in :func:`fts`, :func:`list_datasets`, and
+Implementations live in :func:`fts`, :func:`list_datasets_for_reset`, and
 :func:`rebuild_index`.  :class:`Command` wraps them for ``fire.Fire``.
 """
 
@@ -19,7 +19,6 @@ from .dataset import Dataset
 from .paths import path_enum
 from .setting import Setting
 
-
 _log_error = afwf.log_error(
     log_file=path_enum.path_error_log,
     tb_limit=10,
@@ -27,7 +26,10 @@ _log_error = afwf.log_error(
 
 
 @_log_error
-def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
+def fts(
+    dataset_name: str,
+    query: str,
+) -> afwf.ScriptFilter:
     """
     Core implementation of the ``fts`` subcommand — full-text search over a
     named dataset.  Called on every keystroke by the Alfred Script Filter.
@@ -75,6 +77,7 @@ def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
     dataset = Dataset(name=dataset_name)
 
     if query == "?":
+        # special "?" query: reveal the dataset's setting file in Finder instead of searching
         item = afwf.Item(
             title=f"Open {dataset_name!r} dataset folder location",
             subtitle="hit 'Enter' to open folder location",
@@ -83,10 +86,11 @@ def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
         item.reveal_file_in_finder(str(dataset._path_setting))
         return afwf.ScriptFilter(items=[item])
 
+    # normal search path: build the index on first run if it doesn't exist yet
     if not dataset._dir_index.exists():
         dataset.build_index()
 
-    doc_list = dataset.search(query or "*")
+    doc_list = dataset.search(query or "*")  # empty query → "*" to return all docs
     setting = dataset.setting
     items = []
     for doc in doc_list:
@@ -101,12 +105,15 @@ def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
         icon = setting.format_icon(doc)
         if icon is not None:
             if icon.startswith("/"):
+                # absolute path — use as-is
                 item.set_icon(icon)
             else:
+                # relative path — resolve against the dataset's icon directory
                 item.set_icon(str(dataset._dir_icon / icon))
         items.append(item)
 
     if not items and query:
+        # non-empty query produced no hits — show a placeholder instead of blank results
         items.append(
             afwf.Item(
                 title=f"No result found for query: {query!r}",
@@ -117,6 +124,7 @@ def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
         )
 
     if not query:
+        # empty query (first open) — append the error-log shortcut at the bottom
         log_item = afwf.Item(
             title="Open error log",
             subtitle=str(path_enum.path_error_log),
@@ -129,7 +137,9 @@ def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
 
 
 @_log_error
-def list_datasets(query: str) -> afwf.ScriptFilter:
+def list_datasets_for_reset(
+    dataset_name_query: str,
+) -> afwf.ScriptFilter:
     """
     Core implementation of the ``list-datasets`` subcommand — enumerate all
     configured datasets and optionally fuzzy-filter them.
@@ -142,14 +152,14 @@ def list_datasets(query: str) -> afwf.ScriptFilter:
     macOS notification on completion.  Files that fail JSON parsing are
     silently skipped so a broken config cannot prevent the rest from showing.
 
-    When ``query`` is non-empty the results are passed through
+    When ``dataset_name_query`` is non-empty the results are passed through
     :class:`fuzzy_item.FuzzyItemMatcher`; if nothing matches, the full list
     is returned unchanged so the user always sees something.
 
     **Query normalisation**
 
     The ``bool`` guard is handled upstream by :meth:`Command.list_datasets`;
-    ``query`` here is always a plain string.
+    ``dataset_name_query`` here is always a plain string.
 
     **Error handling**
 
@@ -165,12 +175,13 @@ def list_datasets(query: str) -> afwf.ScriptFilter:
         try:
             setting = Setting.from_json_file(setting_file)
         except Exception:
+            # skip setting files that fail to parse so one bad config doesn't break the list
             continue
 
         subtitle = (
             f"data_url: {setting.data_url}"
             if setting.data_url
-            else "local data only (no data_url)"
+            else "local data only (no data_url)"  # dataset uses a local file, no remote URL
         )
         item = fuzzy_item.Item(title=dataset_name, subtitle=subtitle)
         item.set_fuzzy_match_name(dataset_name)
@@ -184,6 +195,7 @@ def list_datasets(query: str) -> afwf.ScriptFilter:
         items.append(item)
 
     if not items:
+        # no setting files found at all — guide the user to create one
         return afwf.ScriptFilter(
             items=[
                 afwf.Item(
@@ -195,16 +207,19 @@ def list_datasets(query: str) -> afwf.ScriptFilter:
             ]
         )
 
-    if query:
+    if dataset_name_query:
+        # user typed something — fuzzy-filter the list; fall back to full list if no match
         matcher = fuzzy_item.FuzzyItemMatcher.from_items(items)
-        matched = matcher.match(query, threshold=0)
+        matched = matcher.match(dataset_name_query, threshold=0)
         items = matched if matched else items
 
     return afwf.ScriptFilter(items=items)
 
 
 @_log_error
-def rebuild_index(dataset_name: str) -> None:
+def rebuild_index(
+    dataset_name: str,
+) -> None:
     """
     Core implementation of the ``rebuild-index`` subcommand — destroy and
     recreate the tantivy search index for a dataset.
@@ -225,9 +240,11 @@ def rebuild_index(dataset_name: str) -> None:
     dataset = Dataset(name=dataset_name)
 
     if dataset._dir_index.exists():
+        # remove the stale index so build_index starts from scratch
         shutil.rmtree(dataset._dir_index)
 
     if dataset.setting.data_url:
+        # re-download the source data before rebuilding, so the index reflects the latest remote data
         dataset.download_data()
 
     dataset.build_index()
@@ -236,7 +253,11 @@ def rebuild_index(dataset_name: str) -> None:
 class Command:
     """Alfred workflow subcommands exposed via ``fire.Fire``."""
 
-    def fts(self, dataset_name: str, query: str = ""):
+    def fts(
+        self,
+        dataset_name: str,
+        query: str = "*",
+    ):
         """
         Full-text search; see :func:`fts`.
 
@@ -247,16 +268,22 @@ class Command:
         query = "" if isinstance(query, bool) else str(query)
         fts(dataset_name=str(dataset_name), query=query).send_feedback()
 
-    def list_datasets(self, query: str = ""):
+    def list_datasets_for_reset(
+        self,
+        dataset_name_query: str = "",
+    ):
         """
-        List datasets with optional fuzzy filter; see :func:`list_datasets`.
+        List datasets with optional fuzzy filter; see :func:`list_datasets_for_reset`.
 
         Normalises Fire's boolean ``True`` to an empty string before delegating.
         """
-        query = "" if isinstance(query, bool) else str(query)
-        list_datasets(query=query).send_feedback()
+        dataset_name_query = "" if isinstance(dataset_name_query, bool) else str(dataset_name_query)
+        list_datasets_for_reset(dataset_name_query=dataset_name_query).send_feedback()
 
-    def rebuild_index(self, dataset_name: str):
+    def rebuild_index(
+        self,
+        dataset_name: str,
+    ):
         """Rebuild the search index for a dataset; see :func:`rebuild_index`."""
         rebuild_index(dataset_name=str(dataset_name))
 

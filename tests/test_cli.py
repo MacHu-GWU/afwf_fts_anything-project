@@ -19,7 +19,7 @@ def setup_project_home(tmp_path, monkeypatch) -> Path:
     shutil.copy(dir_tests / "movie-data.json", project_home / "movie-data.json")
     dir_icon = project_home / "movie-icon"
     dir_icon.mkdir()
-    shutil.copy(dir_tests / "movie-icon.png", dir_icon / "movie-icon.png")
+    shutil.copy(dir_tests / "movie-icon" / "movie-icon.png", dir_icon / "movie-icon.png")
 
     return project_home
 
