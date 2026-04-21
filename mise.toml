@@ -1,0 +1,108 @@
+# See claude code environment variables documents at https://code.claude.com/docs/en/settings
+[env]
+GITHUB_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get github.accounts.sh.users.sh.secrets.dev.value') }}"
+CODECOV_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get codecov_io.accounts.sh.users.sh.secrets.dev.value') }}"
+READTHEDOCS_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get readthedocs.accounts.sh.users.sh.secrets.dev.value') }}"
+PYPI_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get pypi.accounts.sh.token') }}"
+
+[tools]
+python = "3.12"
+uv = "latest"
+claude = "latest"
+pandoc = "3.9" # Use pandoc 3.9 - latest stable major version as of 2026-04
+
+# === Tasks ===
+# Python Environment Management
+[tasks.venv-create]
+description = "🐍 Create Python virtual environment using uv (creates .venv directory)"
+run = "uv venv --allow-existing"
+
+[tasks.venv-remove]
+description = "🗑️ Remove Python virtual environment (deletes .venv directory)"
+run = "rm -r .venv"
+
+# Dependency Management
+[tasks.inst]
+description = "💾 Install all Python dependencies using uv (syncs from pyproject.toml and uv.lock)"
+depends = ["venv-create"]
+run = "uv sync --all-extras"
+
+[tasks.export]
+description = "📋 Export Python dependencies to requirements*.txt files using uv (for legacy compatibility)"
+run = """
+uv export --format requirements-txt --no-dev --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements.txt
+uv export --format requirements-txt --extra dev --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements-dev.txt
+uv export --format requirements-txt --extra test --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements-test.txt
+uv export --format requirements-txt --extra doc --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements-doc.txt
+uv export --format requirements-txt --extra mise --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements-mise.txt
+"""
+
+# Testing
+[tasks.test]
+description = "🧪 Run unit tests using pytest (scans test files automatically)"
+run = ".venv/bin/pytest tests"
+depends = ["inst"]
+
+[tasks.cov]
+description = "🧪📊 Run unit tests with code coverage using pytest (generates HTML report in htmlcov/)"
+run = ".venv/bin/pytest tests -s --tb=native --cov=afwf_fts_anything --cov-report term-missing --cov-report html:htmlcov"
+depends = ["inst"]
+
+[tasks.view-cov]
+description = "👀📊 Open code coverage HTML report in browser (requires 'cov' task to run first)"
+run = "open htmlcov/index.html"
+
+# Documentation
+[tasks.build-doc]
+description = "📚 Build Sphinx documentation using sphinx-build (generates HTML in docs/build/html/)"
+depends = ["inst"]
+run = """
+rm -rf docs/build
+.venv/bin/sphinx-build -b html docs/source docs/build/html
+"""
+
+[tasks.view-doc]
+description = "👀📚 Open built Sphinx documentation in browser (requires 'build-doc' task to run first)"
+run = "open docs/build/html/index.html"
+
+[tasks.notebook-to-markdown]
+description = "📓 Convert Jupyter notebooks to Markdown for AI knowledge base (processes .ipynb files)"
+run = ".venv/bin/python .mise/tasks/notebook-to-markdown.py"
+depends = ["inst"]
+
+# Building & Publishing & Release
+[tasks.build]
+description = "🏗️ Build Python package wheel and source distribution using uv (outputs to dist/)"
+run = """
+rm -rf dist
+uv build
+"""
+
+[tasks.publish]
+description = "🚀 Publish Python package to PyPI using uv (prints PyPI URL after success)"
+run = """
+.venv/bin/python .mise/tasks/publish.py
+uv publish --token $PYPI_TOKEN
+"""
+depends = ["build"]
+
+[tasks.release]
+description = "🏷 Create GitHub release using PyGithub (idempotent: skips if release exists)"
+run = ".venv/bin/python .mise/tasks/release.py"
+depends = ["inst"]
+
+# CI/CD Setup
+[tasks.setup-codecov]
+description = "⚙️ Setup Codecov upload token on GitHub Actions secrets using PyGithub and httpx"
+run = ".venv/bin/python .mise/tasks/setup-codecov.py"
+depends = ["inst"]
+
+[tasks.setup-readthedocs]
+description = "⚙️ Setup ReadTheDocs project and GitHub webhook using httpx API client"
+run = ".venv/bin/python .mise/tasks/setup-readthedocs.py"
+depends = ["inst"]
+
+[tasks.update-github-metadata]
+description = "🔧 Update GitHub repository description and homepage using PyGithub"
+run = ".venv/bin/python .mise/tasks/update-github-metadata.py"
+depends = ["inst"]
