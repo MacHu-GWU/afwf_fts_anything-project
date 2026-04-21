@@ -1,4 +1,0 @@
-pathlib-mate==1.2.1
-poetry==1.2.2
-fire==0.5.0
-rich
