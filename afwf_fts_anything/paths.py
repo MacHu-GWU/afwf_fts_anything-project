@@ -67,6 +67,10 @@ class PathEnum:
     def dir_cache(self):
         return self.dir_project_home / ".cache"
 
+    @cached_property
+    def path_error_log(self):
+        return self.dir_project_home / "error.log"
+
 
 path_enum = PathEnum()
 """

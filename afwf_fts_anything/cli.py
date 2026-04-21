@@ -13,17 +13,30 @@ from .paths import path_enum
 from .setting import Setting
 
 
-@afwf.log_error()
+_log_error = afwf.log_error(
+    log_file=path_enum.path_error_log,
+    tb_limit=10,
+)
+
+
+@_log_error
 def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
-    query = str(query)
+    query = str(query) if not isinstance(query, bool) else ""
 
     if not query:
+        log_item = afwf.Item(
+            title="Open error log",
+            subtitle=str(path_enum.path_error_log),
+            icon=afwf.Icon(path=afwf.IconFileEnum.error),
+        )
+        log_item.open_file(str(path_enum.path_error_log))
         return afwf.ScriptFilter(
             items=[
                 afwf.Item(
                     title=f"Full text search {dataset_name!r} dataset",
                     subtitle="Please enter a query ...",
-                )
+                ),
+                log_item,
             ]
         )
 
@@ -74,9 +87,9 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
     return afwf.ScriptFilter(items=items)
 
 
-@afwf.log_error()
+@_log_error
 def _list_datasets(query: str) -> afwf.ScriptFilter:
-    query = str(query)
+    query = str(query) if not isinstance(query, bool) else ""
     project_home = path_enum.dir_project_home
     bin_cli = Path(sys.executable).parent / "afwf-fts-anything"
 
@@ -124,6 +137,7 @@ def _list_datasets(query: str) -> afwf.ScriptFilter:
     return afwf.ScriptFilter(items=items)
 
 
+@_log_error
 def _rebuild_index(dataset_name: str) -> None:
     dataset = Dataset(name=dataset_name)
 
