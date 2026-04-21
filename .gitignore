@@ -1,11 +1,9 @@
 # User Settings
 afwf_fts_anything.egg-info/
-afwf_fts_anything-*/
+docs/source/**/index.md
+.claude/claude-code-message*
 tmp/
 not-exists-data.json.temp.zip
-
-.poetry-lock-hash.json
-.current-env-name.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -91,7 +89,6 @@ celerybeat-schedule
 .env
 
 # virtualenv
-.venv/
 venv/
 ENV/
 
