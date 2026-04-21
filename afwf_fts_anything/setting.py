@@ -21,6 +21,7 @@ from sayt2.api import (
 )
 
 from .exc import MalformedSettingError
+from .json_comment import strip_comments
 
 _p = re.compile(r"\{([A-Za-z0-9_]+)\}")
 
@@ -117,7 +118,9 @@ class Setting(BaseModel):
             f.name
             for f in self.fields
             if isinstance(f, (NgramField, TextField, KeywordField))
-            or (isinstance(f, (NumericField, DatetimeField, BooleanField)) and f.indexed)
+            or (
+                isinstance(f, (NumericField, DatetimeField, BooleanField)) and f.indexed
+            )
         ]
 
     @property
@@ -132,7 +135,7 @@ class Setting(BaseModel):
     @classmethod
     def from_json_file(cls, path: str | Path) -> "Setting":  # pragma: no cover
         """Load a :class:`Setting` from a JSON file at *path*."""
-        return cls.model_validate_json(Path(path).read_text())
+        return cls.model_validate_json(strip_comments(Path(path).read_text()))
 
     def format_title(self, data: dict[str, object]) -> str:  # pragma: no cover
         """Return the Alfred title string for *data*.
@@ -144,7 +147,9 @@ class Setting(BaseModel):
             return data.get("title")
         return self.title_field.format_map(data)
 
-    def format_subtitle(self, data: dict[str, object]) -> str | None:  # pragma: no cover
+    def format_subtitle(
+        self, data: dict[str, object]
+    ) -> str | None:  # pragma: no cover
         """Return the Alfred subtitle string for *data*, or ``None`` if not configured."""
         if self.subtitle_field is None:
             return data.get("subtitle")
@@ -156,7 +161,9 @@ class Setting(BaseModel):
             return data.get("arg")
         return self.arg_field.format_map(data)
 
-    def format_autocomplete(self, data: dict[str, object]) -> str | None:  # pragma: no cover
+    def format_autocomplete(
+        self, data: dict[str, object]
+    ) -> str | None:  # pragma: no cover
         """Return the Alfred autocomplete string for *data*, or ``None`` if not configured."""
         if self.autocomplete_field is None:
             return data.get("autocomplete")

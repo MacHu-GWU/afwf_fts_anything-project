@@ -7,108 +7,86 @@ search index and provides build/search operations.
 
 import io
 import json
+import typing as T
 import urllib.request
 from pathlib import Path
 from zipfile import ZipFile
+from dataclasses import dataclass
 from functools import cached_property
 
 from sayt2.api import DataSet as Sayt2DataSet
 
-from .paths import path_enum
 from .setting import Setting
 
 
+@dataclass
 class Dataset:
     """
     A search dataset backed by a sayt2 index.
 
-    It is identified by a unique *name* and expects three resources in the
-    project-home directory (``~/.alfred-afwf/afwf_fts_anything/``):
+    Identified by a *name* and a *dir_root* directory that owns all dataset
+    resources under a shared convention:
 
-    - ``{name}-setting.json`` -- field schema and display config
-    - ``{name}-data.json`` -- the records to index
-    - ``{name}-index/`` -- the sayt2 index directory (auto-created)
-
-    All four path arguments are optional overrides for testing or non-standard
-    layouts.
+    - ``{dir_root}/{name}-setting.json`` -- field schema and display config
+    - ``{dir_root}/{name}-data.json``    -- the records to index
+    - ``{dir_root}/{name}-index/``       -- sayt2 index directory (auto-created)
+    - ``{dir_root}/icons/{name}.png``    -- per-result icons (resolved on demand)
     """
 
-    def __init__(
-        self,
-        name: str,
-        path_setting: Path | None = None,
-        path_data: Path | None = None,
-        dir_index: Path | None = None,
-        dir_icon: Path | None = None,
-    ):
-        self.name = name
-        self.path_setting = path_setting
-        self.path_data = path_data
-        self.dir_index = dir_index
-        self.dir_icon = dir_icon
+    name: str
+    dir_root: Path
 
     # ------------------------------------------------------------------
-    # Resolved paths
-    # ------------------------------------------------------------------
-
-    @property
-    def _path_setting(self) -> Path:
-        """Resolved path to the setting JSON file."""
-        return (
-            self.path_setting
-            or path_enum.dir_project_home / f"{self.name}-setting.json"
-        )
-
-    @property
-    def _path_data(self) -> Path:
-        """Resolved path to the data JSON file."""
-        return self.path_data or path_enum.dir_project_home / f"{self.name}-data.json"
-
-    @property
-    def _dir_index(self) -> Path:
-        """Resolved path to the sayt2 index directory."""
-        return self.dir_index or path_enum.dir_project_home / f"{self.name}-index"
-
-    @property
-    def _dir_icon(self) -> Path:
-        """Resolved path to the icon directory."""
-        return self.dir_icon or path_enum.dir_project_home / f"{self.name}-icon"
-
-    # ------------------------------------------------------------------
-    # Setting
+    # Computed paths (cached so repeated access is free)
     # ------------------------------------------------------------------
 
     @cached_property
-    def setting(self) -> Setting:
-        """Parsed :class:`.Setting` loaded from :attr:`_path_setting`."""
-        return Setting.from_json_file(self._path_setting)
+    def path_setting(self) -> Path:
+        return self.dir_root / f"{self.name}-setting.json"
+
+    @cached_property
+    def path_data(self) -> Path:
+        return self.dir_root / f"{self.name}-data.json"
+
+    @cached_property
+    def dir_index(self) -> Path:
+        return self.dir_root / f"{self.name}-index"
 
     # ------------------------------------------------------------------
-    # sayt2 DataSet factory
+    # Resource accessors
     # ------------------------------------------------------------------
 
-    def _make_sayt2_dataset(self) -> Sayt2DataSet:
-        """Create a :class:`sayt2.DataSet` wired to this dataset's index and setting."""
-        return Sayt2DataSet(
-            dir_root=self._dir_index,
-            name=self.name,
-            fields=self.setting.fields,
-            downloader=self.get_data,
-            sort=self.setting.sort,
-        )
+    def get_icon(self, name: str) -> Path:
+        """Return the path to ``{dir_root}/icons/{name}.png``."""
+        return self.dir_root / "icons" / f"{name}.png"
 
-    # ------------------------------------------------------------------
-    # Data access
-    # ------------------------------------------------------------------
+    def get_setting(self) -> Setting:
+        """Load and return the :class:`.Setting` from disk (no cache)."""
+        return Setting.from_json_file(self.path_setting)
 
     def get_data(self) -> list[dict]:
         """Read records from the local data JSON file.
 
         If the file does not exist, :meth:`download_data` is called first.
         """
-        if not self._path_data.exists():  # pragma: no cover
+        if not self.path_data.exists():  # pragma: no cover
             self.download_data()
-        return json.loads(self._path_data.read_text())
+        return json.loads(self.path_data.read_text())
+
+    @cached_property
+    def setting(self) -> Setting:
+        """Parsed :class:`.Setting`, cached after the first call."""
+        return self.get_setting()
+
+    def get_sayt2_dataset(self) -> Sayt2DataSet:
+        """Create a :class:`sayt2.DataSet` wired to this dataset's index and setting."""
+        return Sayt2DataSet(
+            dir_root=self.dir_index,
+            name=self.name,
+            fields=self.setting.fields,
+            downloader=self.get_data,
+            sort=self.setting.sort,
+        )
 
     # ------------------------------------------------------------------
     # Download helpers (network-free parts are testable)
@@ -121,14 +99,10 @@ class Dataset:
             json_names = [n for n in zf.namelist() if n.endswith(".json")]
             return zf.read(json_names[0])
 
-    def _save_data(
-        self,
-        raw_bytes: bytes,
-        is_zip: bool,
-    ) -> None:
-        """Write *raw_bytes* to :attr:`_path_data`, decompressing if *is_zip* is True."""
+    def _save_data(self, raw_bytes: bytes, is_zip: bool) -> None:
+        """Write *raw_bytes* to :attr:`path_data`, decompressing if *is_zip* is True."""
         data_bytes = self._extract_json_from_zip(raw_bytes) if is_zip else raw_bytes
-        self._path_data.write_bytes(data_bytes)
+        self.path_data.write_bytes(data_bytes)
 
     def _fetch_url(self, url: str) -> bytes:  # pragma: no cover
         """Download *url* and return raw bytes via :mod:`urllib`."""
@@ -143,7 +117,7 @@ class Dataset:
         url = self.setting.data_url
         if url is None:
             raise ValueError(
-                f"'data_url' is not defined in setting file '{self._path_setting}'."
+                f"'data_url' is not defined in setting file '{self.path_setting}'."
             )
         raw = self._fetch_url(url)
         self._save_data(raw, is_zip=url.endswith(".zip"))
@@ -154,7 +128,7 @@ class Dataset:
 
     def build_index(
         self,
-        data: list[dict] | None = None,
+        data: list[dict[str, T.Any]] | None = None,
         rebuild: bool = False,
     ) -> int:
         """Build the sayt2 search index from *data*.
@@ -164,7 +138,7 @@ class Dataset:
             subsequent searches always reflect the new index.
         :returns: number of documents indexed.
         """
-        ds = self._make_sayt2_dataset()
+        ds = self.get_sayt2_dataset()
         if rebuild:
             ds._cache.evict_all()
         count = ds.build_index(data=data)
@@ -175,13 +149,13 @@ class Dataset:
         self,
         query: str,
         limit: int = 20,
-    ) -> list[dict]:
+    ) -> list[dict[str, T.Any]]:
         """Search the index and return matching documents as plain dicts.
 
         :param query: Lucene-syntax query string.
         :param limit: maximum number of results to return.
         :returns: list of ``hit.source`` dicts ordered by relevance / sort key.
         """
-        with self._make_sayt2_dataset() as ds:
+        with self.get_sayt2_dataset() as ds:
             result = ds.search(query, limit=limit)
         return [hit.source for hit in result.hits]
