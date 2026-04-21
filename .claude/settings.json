@@ -1,0 +1,41 @@
+{
+    "model": "sonnet",
+    "permissions": {
+        "defaultMode": "acceptEdits",
+        "deny": [
+            "Bash(git commit*)",
+            "Bash(git push*)"
+        ],
+        "allow": [
+            "Read(========== Read Section ==========)",
+            "Read(========== Write Section ==========)",
+            "Write(.claude/*.md)",
+            "Write(.claude/TEACHING.md)",
+            "Write(.claude/skills/*/*.md)",
+            "Write(.claude/skills/*/SKILL.md)",
+            "Write(.claude/skills/*/references/*.md)",
+            "Write(.claude/skills/*/scripts/*.py)",
+            "Write(./**/*.md)",
+            "Write(./README.md)",
+            "Write(./README-cn.md)",
+            "Write(./TICKET.md)",
+            "Write(./CLAUDE.md)",
+            "Write(afwf_fts_anything/**/*.py)",
+            "Write(tests/**/*.py)",
+            "Write(scripts/**/*.py)",
+            "Read(========== Bash Section ==========)",
+            "Bash(.venv/bin/python debug/**/*.py)",
+            "Bash(.venv/bin/python scripts/**/*.py)",
+            "Bash(.venv/bin/python config/**/*.py)",
+            "Bash(.venv/bin/python tests/**/*.py)",
+            "Bash(mise *)",
+            "Bash(uv *)",
+            "Bash(ruff *)",
+            "Read(========== Skill Section ==========)",
+            "Read(========== Web Search ==========)",
+            "WebSearch",
+            "Read(========== Web Fetch ==========)",
+            "WebFetch(domain:raw.githubusercontent.com)"
+        ]
+    }
+}
