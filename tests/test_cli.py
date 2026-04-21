@@ -16,11 +16,14 @@ class TestFts:
         project_home.mkdir()
         monkeypatch.setattr(path_enum, "dir_project_home", project_home)
 
-        # Copy setting + data into the temp project home
+        # Copy setting, data, and icon directory into the temp project home
         shutil.copy(
             dir_tests / "movie-setting.json", project_home / "movie-setting.json"
         )
         shutil.copy(dir_tests / "movie-data.json", project_home / "movie-data.json")
+        dir_icon = project_home / "movie-icon"
+        dir_icon.mkdir()
+        shutil.copy(dir_tests / "movie-icon.png", dir_icon / "movie-icon.png")
 
         # Bypass log_error to let exceptions surface in tests
         fts = cli_mod._fts.__wrapped__
@@ -39,6 +42,7 @@ class TestFts:
         sf = fts(dataset_name="movie", query="God Father")
         assert len(sf.items) > 0
         assert sf.items[0].arg == "2"
+        assert sf.items[0].icon.path == str(project_home / "movie-icon" / "movie-icon.png")
 
         # index already exists on second call (no rebuild)
         sf = fts(dataset_name="movie", query="God Father")
