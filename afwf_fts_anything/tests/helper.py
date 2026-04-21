@@ -1,46 +1,32 @@
 # -*- coding: utf-8 -*-
 
-import subprocess
+from ..paths import path_enum
+from ..vendor.pytest_cov_helper import (
+    run_unit_test as _run_unit_test,
+    run_cov_test as _run_cov_test,
+)
 
-from ..paths import dir_project_root, dir_htmlcov, path_cov_index_html, bin_pytest
+
+def run_unit_test(
+    script: str,
+):
+    _run_unit_test(
+        script=script,
+        root_dir=f"{path_enum.dir_project_root}",
+    )
 
 
-def _run_cov_test(
-    bin_pytest: str,
+def run_cov_test(
     script: str,
     module: str,
-    root_dir: str,
-    htmlcov_dir: str,
+    preview: bool = False,
+    is_folder: bool = False,
 ):
-    """
-    A simple wrapper around pytest + coverage cli command.
-
-    :param bin_pytest: the path to pytest executable
-    :param script: the path to test script
-    :param module: the dot notation to the python module you want to calculate
-        coverage
-    :param root_dir: the dir to dump coverage results binary file
-    :param htmlcov_dir: the dir to dump HTML output
-    """
-    args = [
-        bin_pytest,
-        "-s", "--tb=native",
-        f"--rootdir={root_dir}",
-        f"--cov={module}",
-        "--cov-report", "term-missing",
-        "--cov-report", f"html:{htmlcov_dir}",
-        script,
-    ]
-    subprocess.run(args)
-
-
-def run_cov_test(script: str, module: str, preview: bool=False):
     _run_cov_test(
-        bin_pytest=f"{bin_pytest}",
         script=script,
         module=module,
-        root_dir=f"{dir_project_root}",
-        htmlcov_dir=f"{dir_htmlcov}",
+        root_dir=f"{path_enum.dir_project_root}",
+        htmlcov_dir=f"{path_enum.dir_htmlcov}",
+        preview=preview,
+        is_folder=is_folder,
     )
-    if preview:
-        subprocess.run(["open", f"{path_cov_index_html}"])
