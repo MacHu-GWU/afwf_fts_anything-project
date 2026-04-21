@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import sys
+import shutil
+from pathlib import Path
+
 import fire
 import afwf.api as afwf
+import afwf.opt.fuzzy_item.api as fuzzy_item
 
 from .dataset import Dataset
+from .paths import path_enum
+from .setting import Setting
 
 
 @afwf.log_error()
@@ -67,9 +74,77 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
     return afwf.ScriptFilter(items=items)
 
 
+@afwf.log_error()
+def _list_datasets(query: str) -> afwf.ScriptFilter:
+    query = str(query)
+    project_home = path_enum.dir_project_home
+    bin_cli = Path(sys.executable).parent / "afwf-fts-anything"
+
+    items = []
+    for setting_file in sorted(project_home.glob("*-setting.json")):
+        dataset_name = setting_file.name.removesuffix("-setting.json")
+        try:
+            setting = Setting.from_json_file(setting_file)
+        except Exception:
+            continue
+
+        subtitle = (
+            f"data_url: {setting.data_url}"
+            if setting.data_url
+            else "local data only (no data_url)"
+        )
+        item = fuzzy_item.Item(title=dataset_name, subtitle=subtitle)
+        item.set_fuzzy_match_name(dataset_name)
+
+        cmd = f"{bin_cli} rebuild-index --dataset-name {dataset_name!r}"
+        item.run_script(cmd)
+        item.send_notification(
+            title=f"Rebuilt index: {dataset_name!r}",
+            subtitle=subtitle,
+        )
+        items.append(item)
+
+    if not items:
+        return afwf.ScriptFilter(
+            items=[
+                afwf.Item(
+                    title="No datasets found",
+                    subtitle=f"Put {{name}}-setting.json in {project_home}",
+                    valid=False,
+                    icon=afwf.Icon(path=afwf.IconFileEnum.error),
+                )
+            ]
+        )
+
+    if query:
+        matcher = fuzzy_item.FuzzyItemMatcher.from_items(items)
+        matched = matcher.match(query, threshold=0)
+        items = matched if matched else items
+
+    return afwf.ScriptFilter(items=items)
+
+
+def _rebuild_index(dataset_name: str) -> None:
+    dataset = Dataset(name=dataset_name)
+
+    if dataset._dir_index.exists():
+        shutil.rmtree(dataset._dir_index)
+
+    if dataset.setting.data_url:
+        dataset.download_data()
+
+    dataset.build_index()
+
+
 class Command:
     def fts(self, dataset_name: str, query: str = ""):
         _fts(dataset_name=str(dataset_name), query=str(query)).send_feedback()
+
+    def list_datasets(self, query: str = ""):
+        _list_datasets(query=str(query)).send_feedback()
+
+    def rebuild_index(self, dataset_name: str):
+        _rebuild_index(dataset_name=str(dataset_name))
 
 
 def main():
