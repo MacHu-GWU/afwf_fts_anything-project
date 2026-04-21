@@ -27,11 +27,12 @@ def setup_project_home(tmp_path, monkeypatch) -> Path:
 class TestFts:
     def test_fts(self, tmp_path, monkeypatch):
         project_home = setup_project_home(tmp_path, monkeypatch)
-        fts = cli_mod._fts.__wrapped__
+        fts = cli_mod.fts.__wrapped__
 
-        # empty query → prompt item
+        # empty query → search with "" returns data; last item is "Open error log"
         sf = fts(dataset_name="movie", query="")
-        assert sf.items[0].title == "Full text search 'movie' dataset"
+        assert len(sf.items) > 1
+        assert sf.items[-1].title == "Open error log"
 
         # "?" → reveal setting file in Finder
         sf = fts(dataset_name="movie", query="?")
@@ -60,7 +61,7 @@ class TestListDatasets:
         project_home.mkdir()
         monkeypatch.setattr(path_enum, "dir_project_home", project_home)
 
-        sf = cli_mod._list_datasets.__wrapped__(query="")
+        sf = cli_mod.list_datasets.__wrapped__(query="")
         assert len(sf.items) == 1
         assert sf.items[0].valid is False
         assert "No datasets found" in sf.items[0].title
@@ -68,7 +69,7 @@ class TestListDatasets:
     def test_list_all(self, tmp_path, monkeypatch):
         setup_project_home(tmp_path, monkeypatch)
 
-        sf = cli_mod._list_datasets.__wrapped__(query="")
+        sf = cli_mod.list_datasets.__wrapped__(query="")
         assert len(sf.items) == 1
         assert sf.items[0].title == "movie"
         # pressing Enter triggers rebuild-index
@@ -78,14 +79,14 @@ class TestListDatasets:
     def test_fuzzy_match(self, tmp_path, monkeypatch):
         setup_project_home(tmp_path, monkeypatch)
 
-        sf = cli_mod._list_datasets.__wrapped__(query="mov")
+        sf = cli_mod.list_datasets.__wrapped__(query="mov")
         assert len(sf.items) == 1
         assert sf.items[0].title == "movie"
 
     def test_fuzzy_no_match_returns_all(self, tmp_path, monkeypatch):
         setup_project_home(tmp_path, monkeypatch)
 
-        sf = cli_mod._list_datasets.__wrapped__(query="zzznomatch")
+        sf = cli_mod.list_datasets.__wrapped__(query="zzznomatch")
         # falls back to full list
         assert len(sf.items) == 1
 
@@ -94,7 +95,7 @@ class TestListDatasets:
         # write a broken setting file
         (project_home / "broken-setting.json").write_text("not valid json{{{")
 
-        sf = cli_mod._list_datasets.__wrapped__(query="")
+        sf = cli_mod.list_datasets.__wrapped__(query="")
         titles = [i.title for i in sf.items]
         assert "movie" in titles
         assert "broken" not in titles
@@ -106,12 +107,12 @@ class TestRebuildIndex:
         dataset_name = "movie"
 
         # build initial index
-        cli_mod._rebuild_index(dataset_name)
+        cli_mod.rebuild_index(dataset_name)
         dir_index = project_home / "movie-index"
         assert dir_index.exists()
 
         # rebuild clears and recreates the index
-        cli_mod._rebuild_index(dataset_name)
+        cli_mod.rebuild_index(dataset_name)
         assert dir_index.exists()
 
 

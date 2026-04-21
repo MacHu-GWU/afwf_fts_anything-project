@@ -3,8 +3,8 @@
 """
 CLI entry points for the ``afwf-fts-anything`` Alfred workflow.
 
-Implementations live in :func:`_fts`, :func:`_list_datasets`, and
-:func:`_rebuild_index`.  :class:`Command` wraps them for ``fire.Fire``.
+Implementations live in :func:`fts`, :func:`list_datasets`, and
+:func:`rebuild_index`.  :class:`Command` wraps them for ``fire.Fire``.
 """
 
 import sys
@@ -27,7 +27,7 @@ _log_error = afwf.log_error(
 
 
 @_log_error
-def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
+def fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
     """
     Core implementation of the ``fts`` subcommand — full-text search over a
     named dataset.  Called on every keystroke by the Alfred Script Filter.
@@ -36,29 +36,27 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
 
     Alfred passes the user's input via ``--query {query}`` (no quotes around
     ``{query}``).  Alfred backslash-escapes spaces so the shell treats the
-    string as a single argument.  Two edge cases require explicit handling:
+    string as a single argument.  Do **not** wrap ``{query}`` in single quotes
+    in the Alfred Script Filter command: single quotes pass backslashes through
+    literally, so ``--query '{query}'`` would deliver ``god\\ father`` to the
+    process instead of ``god father``.
 
-    - *Empty input* — when the Alfred field is blank, ``{query}`` expands to
-      nothing and the shell command becomes bare ``--query`` with no value.
-      Python Fire then assigns the boolean ``True`` to the parameter instead
-      of an empty string.  The first line therefore converts any ``bool``
-      value to ``""`` so the empty-query branch fires correctly::
-
-          query = str(query) if not isinstance(query, bool) else ""
-
-    - *Do not quote* ``{query}`` in the Alfred Script Filter command.
-      Single quotes pass backslashes through literally, so
-      ``--query '{query}'`` would deliver ``god\\ father`` to the process
-      instead of ``god father``.
+    The ``bool`` guard (converting Fire's ``True`` to ``""``) is handled by
+    :meth:`Command.fts` before this function is called, so ``query`` here is
+    always a plain string.
 
     **Branches**
 
-    - ``query == ""`` — prompt screen: shows a "please type a query" hint
-      and an "Open error log" shortcut (see *Error handling* below).
-    - ``query == "?"`` — reveal the dataset's setting file in Finder.
-    - Otherwise — build the index on first run if absent, search, and return
-      result items.  Falls back to a "No result found" item when the index
-      returns no hits.
+    - ``query == "?"`` — reveal the dataset's setting file in Finder; returns
+      immediately without touching the index.
+    - Otherwise (including ``query == ""``) — build the index on first run if
+      absent, then call :meth:`.Dataset.search`.  An empty query is translated
+      to ``"*"`` (tantivy all-documents wildcard) so the user sees the full
+      dataset on first open.  The "Open error log" item is appended as the last
+      entry so the
+      user can always access it when the query field is clear.  Falls back to a
+      "No result found" item when the index returns no hits for a non-empty
+      query.
 
     **Error handling and logging**
 
@@ -69,30 +67,11 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
     ``~/.alfred-afwf/afwf_fts_anything/error.log`` before the exception is
     re-raised.  The log file rotates at ~500 KB, keeping 2 backups.
 
-    To access the log without leaving Alfred: clear the search field to reach
-    the prompt screen, then press Enter on the "Open error log" item.  That
+    To access the log without leaving Alfred: clear the search field so the
+    "Open error log" item appears at the bottom, then press Enter on it.  That
     item carries an :meth:`afwf.Item.open_file` action pointing at
     :attr:`.PathEnum.path_error_log`.
     """
-    query = str(query) if not isinstance(query, bool) else ""
-
-    if not query:
-        log_item = afwf.Item(
-            title="Open error log",
-            subtitle=str(path_enum.path_error_log),
-            icon=afwf.Icon(path=afwf.IconFileEnum.error),
-        )
-        log_item.open_file(str(path_enum.path_error_log))
-        return afwf.ScriptFilter(
-            items=[
-                afwf.Item(
-                    title=f"Full text search {dataset_name!r} dataset",
-                    subtitle="Please enter a query ...",
-                ),
-                log_item,
-            ]
-        )
-
     dataset = Dataset(name=dataset_name)
 
     if query == "?":
@@ -107,7 +86,7 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
     if not dataset._dir_index.exists():
         dataset.build_index()
 
-    doc_list = dataset.search(query)
+    doc_list = dataset.search(query or "*")
     setting = dataset.setting
     items = []
     for doc in doc_list:
@@ -127,7 +106,7 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
                 item.set_icon(str(dataset._dir_icon / icon))
         items.append(item)
 
-    if not items:
+    if not items and query:
         items.append(
             afwf.Item(
                 title=f"No result found for query: {query!r}",
@@ -137,11 +116,20 @@ def _fts(dataset_name: str, query: str) -> afwf.ScriptFilter:
             )
         )
 
+    if not query:
+        log_item = afwf.Item(
+            title="Open error log",
+            subtitle=str(path_enum.path_error_log),
+            icon=afwf.Icon(path=afwf.IconFileEnum.error),
+        )
+        log_item.open_file(str(path_enum.path_error_log))
+        items.append(log_item)
+
     return afwf.ScriptFilter(items=items)
 
 
 @_log_error
-def _list_datasets(query: str) -> afwf.ScriptFilter:
+def list_datasets(query: str) -> afwf.ScriptFilter:
     """
     Core implementation of the ``list-datasets`` subcommand — enumerate all
     configured datasets and optionally fuzzy-filter them.
@@ -160,17 +148,14 @@ def _list_datasets(query: str) -> afwf.ScriptFilter:
 
     **Query normalisation**
 
-    Same bool-guard as :func:`_fts`: a bare ``--query`` with no value is
-    delivered by Fire as ``True``; this is converted to ``""`` so the
-    unfiltered list is shown rather than a spurious fuzzy search for
-    ``"True"``.
+    The ``bool`` guard is handled upstream by :meth:`Command.list_datasets`;
+    ``query`` here is always a plain string.
 
     **Error handling**
 
     Decorated with the shared ``_log_error`` instance; exceptions are logged
     to :attr:`.PathEnum.path_error_log` with a 10-frame traceback limit.
     """
-    query = str(query) if not isinstance(query, bool) else ""
     project_home = path_enum.dir_project_home
     bin_cli = Path(sys.executable).parent / "afwf-fts-anything"
 
@@ -219,7 +204,7 @@ def _list_datasets(query: str) -> afwf.ScriptFilter:
 
 
 @_log_error
-def _rebuild_index(dataset_name: str) -> None:
+def rebuild_index(dataset_name: str) -> None:
     """
     Core implementation of the ``rebuild-index`` subcommand — destroy and
     recreate the tantivy search index for a dataset.
@@ -230,7 +215,7 @@ def _rebuild_index(dataset_name: str) -> None:
     the source data when :attr:`.Setting.data_url` is set, then calls
     :meth:`.Dataset.build_index` to create a fresh index.  Intended to be
     invoked from an Alfred Run Script action after the user selects a dataset
-    in the :func:`_list_datasets` screen.
+    in the :func:`list_datasets` screen.
 
     **Error handling**
 
@@ -252,16 +237,28 @@ class Command:
     """Alfred workflow subcommands exposed via ``fire.Fire``."""
 
     def fts(self, dataset_name: str, query: str = ""):
-        """Full-text search; see :func:`_fts`."""
-        _fts(dataset_name=str(dataset_name), query=str(query)).send_feedback()
+        """
+        Full-text search; see :func:`fts`.
+
+        Normalises Fire's boolean ``True`` (produced when ``--query`` is passed
+        with no value, i.e. the Alfred field is blank) to an empty string before
+        delegating to :func:`fts`.
+        """
+        query = "" if isinstance(query, bool) else str(query)
+        fts(dataset_name=str(dataset_name), query=query).send_feedback()
 
     def list_datasets(self, query: str = ""):
-        """List datasets with optional fuzzy filter; see :func:`_list_datasets`."""
-        _list_datasets(query=str(query)).send_feedback()
+        """
+        List datasets with optional fuzzy filter; see :func:`list_datasets`.
+
+        Normalises Fire's boolean ``True`` to an empty string before delegating.
+        """
+        query = "" if isinstance(query, bool) else str(query)
+        list_datasets(query=query).send_feedback()
 
     def rebuild_index(self, dataset_name: str):
-        """Rebuild the search index for a dataset; see :func:`_rebuild_index`."""
-        _rebuild_index(dataset_name=str(dataset_name))
+        """Rebuild the search index for a dataset; see :func:`rebuild_index`."""
+        rebuild_index(dataset_name=str(dataset_name))
 
 
 def main():
