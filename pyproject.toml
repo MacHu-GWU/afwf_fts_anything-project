@@ -112,6 +112,7 @@ Download = "https://pypi.org/pypi/afwf-fts-anything#files"
 
 # For command line interface, read: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
 [project.scripts]
+afwf-fts-anything = "afwf_fts_anything.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
