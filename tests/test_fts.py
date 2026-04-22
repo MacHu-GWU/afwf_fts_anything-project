@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-
 import pytest
 
 from afwf_fts_anything.fts import fts, ActionEnum
+from afwf_fts_anything.paths import path_enum
 
-# tests/ is the DataCatalog root; tests/movie/ is the "movie" dataset root
-dir_tests = Path(__file__).parent
+# afwf_fts_anything/tests/data/ is the DataCatalog root; .../data/movie/ is the "movie" dataset root
+dir_tests = path_enum.dir_package_test_data
 
 
 class TestFtsRevealSetting:

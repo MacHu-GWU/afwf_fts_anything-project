@@ -6,7 +6,7 @@ from pathlib import Path
 import afwf_fts_anything.cli as cli_mod
 from afwf_fts_anything.paths import path_enum
 
-dir_tests = Path(__file__).parent
+dir_tests = path_enum.dir_package_test_data
 
 
 def setup_project_home(tmp_path, monkeypatch) -> Path:

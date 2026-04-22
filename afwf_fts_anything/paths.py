@@ -46,10 +46,14 @@ class PathEnum:
     dir_int_test = dir_project_root / "tests_int"
     dir_load_test = dir_project_root / "tests_load"
 
-    path_setting = dir_unit_test / "movie-setting.json"
-    path_data = dir_unit_test / "movie-data.json"
-    dir_index = dir_unit_test / "movie-whoosh_index"
-    dir_icon = dir_unit_test / "movie-icon"
+    # Test data (inside package)
+    dir_package_tests = dir_package / "tests"
+    dir_package_test_data = dir_package_tests / "data"
+    dir_package_test_data_movie = dir_package_test_data / "movie"
+    path_package_test_movie_setting = dir_package_test_data_movie / "movie-setting.json"
+    path_package_test_movie_data = dir_package_test_data_movie / "movie-data.json"
+    dir_package_test_movie_icons = dir_package_test_data_movie / "icons"
+    path_package_test_movie_icon = dir_package_test_movie_icons / "movie-icon.png"
 
     # Documentation
     dir_docs_source = dir_project_root / "docs" / "source"

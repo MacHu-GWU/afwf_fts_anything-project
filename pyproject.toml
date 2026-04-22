@@ -120,10 +120,14 @@ include = [
     "afwf_fts_anything*"
 ]
 exclude = [
-    "afwf_fts_anything.tests",
-    "afwf_fts_anything.tests.*",
     "afwf_fts_anything.docs",
     "afwf_fts_anything.docs.*",
+]
+
+[tool.setuptools.package-data]
+"afwf_fts_anything" = [
+    "tests/data/movie/*.json",
+    "tests/data/movie/icons/*.png",
 ]
 
 [build-system]

@@ -3,11 +3,11 @@
 import io
 import json
 import zipfile
-from pathlib import Path
 
 from afwf_fts_anything.dataset import Dataset
+from afwf_fts_anything.paths import path_enum
 
-dir_movie = Path(__file__).parent / "movie"
+dir_movie = path_enum.dir_package_test_data_movie
 
 
 def make_dataset() -> Dataset:

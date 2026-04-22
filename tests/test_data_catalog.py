@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-from pathlib import Path
 
 from afwf_fts_anything.data_catalog import DataCatalog, DatasetMeta, DatasetMetaStatusEnum
+from afwf_fts_anything.paths import path_enum
 
-dir_tests = Path(__file__).parent
+dir_tests = path_enum.dir_package_test_data
 
 
 class TestDatasetMeta:
@@ -32,7 +32,7 @@ class TestDataCatalogGetDataset:
 
 class TestDataCatalogScan:
     def test_valid_dataset(self):
-        # tests/movie/ has a well-formed movie-setting.json → should be valid
+        # afwf_fts_anything/tests/data/movie/ has a well-formed movie-setting.json → should be valid
         catalog = DataCatalog(dir_root=dir_tests)
         metas = catalog.scan()
         movie = next((m for m in metas if m.name == "movie"), None)
