@@ -65,11 +65,11 @@ You configure the action once in the Alfred Script Filter:
 .. code-block:: bash
 
     # open a URL on Enter
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything fts \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything fts \
         --dataset-name 'movie' --query '{query}' --action open_url
 
     # open a local file on Enter
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything fts \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything fts \
         --dataset-name 'movie' --query '{query}' --action open_file
 
 No installation, no virtual environment. ``uvx`` handles everything.
@@ -147,9 +147,9 @@ Alfred Owns the UI
 There is no custom UI code to write. Everything visible in Alfred — the
 dropdown list, keyboard navigation, icons, subtitles, clipboard copy
 (``CMD+C``), tab-autocomplete — is standard Alfred behavior. You wire it
-together with one ``uvx`` command in a Script Filter:
+together with one ``uvx`` command in a Script Filter::
 
-.. image:: ./docs/source/01-User-Guide/01-How-it-Works/images/alfred-workflow-configuration.png
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything fts --dataset-name 'movie' --action 'open_url' --query {query}
 
 The only thing you touch is the Script field. Everything else is Alfred.
 
@@ -185,10 +185,8 @@ dependency. Build an index from any JSON dataset and query it directly:
 
 Documentation
 ------------------------------------------------------------------------------
-Full documentation — Quick Start, Setting File Reference, Alfred Workflow
-Setup, and a step-by-step guide to building your own dataset:
-
-📖 `https://afwf-fts-anything.readthedocs.io/en/latest/ <https://afwf-fts-anything.readthedocs.io/en/latest/>`_
+`Full documentation <https://afwf-fts-anything.readthedocs.io/en/latest/>`_ — Quick Start, Setting File Reference, Alfred Workflow
+Setup, and a step-by-step guide to building your own dataset.
 
 
 Projects Built on ``afwf_fts_anything``

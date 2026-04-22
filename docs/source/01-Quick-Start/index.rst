@@ -56,7 +56,7 @@ location automatically:
 
 .. code-block:: bash
 
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything setup-sample-data
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything setup-sample-data
 
 This command:
 
@@ -140,7 +140,7 @@ run from Terminal:
 
 .. code-block:: bash
 
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything rebuild-index \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything rebuild-index \
         --dataset-name 'movie'
 
 ----

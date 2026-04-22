@@ -10,7 +10,6 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    _version <_version>
     api <api>
     cli <cli>
     data_catalog <data_catalog>

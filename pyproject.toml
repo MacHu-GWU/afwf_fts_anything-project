@@ -9,7 +9,7 @@ name = "afwf_fts_anything"
 # Currently, poetry 2.1.X doesn't support dynamic versioning
 # (Read https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#version)
 # So this value has to be aligned with the one in ``afwf_fts_anything/_version.py``
-version = "2.0.1"
+version = "2.0.2"
 description = "Allows you to do full-text search on your own dataset, and use the result to open url, open file, run script, or basically do anything."
 # Read https://dev-exp-share.readthedocs.io/en/latest/search.html?q=Pick+An+Open+Source+License+For+Python+Project&check_keywords=yes&area=default
 # To pick a license and update the ``license``, ``classifier`` field in ``pyproject.toml``

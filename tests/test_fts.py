@@ -90,14 +90,19 @@ class TestFtsAction:
 
 
 class TestFtsErrorCases:
-    def test_nonexistent_dataset_raises(self, tmp_path):
-        # tmp_path has no "ghost" subdirectory → build_index will fail
-        with pytest.raises(Exception):
-            fts(dataset_name="ghost", query="anything", dir_datacatalog_root=tmp_path)
+    def test_missing_setting_returns_error_item(self, tmp_path):
+        # tmp_path has no "ghost" subdirectory → setting file does not exist
+        items = fts(dataset_name="ghost", query="anything", dir_datacatalog_root=tmp_path)
+        assert len(items) == 1
+        item = items[0]
+        assert "ghost" in item.title
+        assert "not found" in item.title
+        assert item.variables.get("open_file") == "y"
+        assert item.arg is not None and item.arg.endswith("ghost-setting.json")
 
-    def test_missing_data_file_raises(self, tmp_path):
+    def test_build_index_error_returns_error_item(self, tmp_path):
         # dataset dir exists with a valid setting (no data_url) but no data file;
-        # get_data() will call download_data() which raises ValueError when data_url is absent
+        # build_index will fail because get_data() → download_data() raises ValueError
         import json
         dataset_dir = tmp_path / "empty"
         dataset_dir.mkdir()
@@ -109,8 +114,12 @@ class TestFtsErrorCases:
             "autocomplete_field": "{id}",
         }
         (dataset_dir / "empty-setting.json").write_text(json.dumps(setting))
-        with pytest.raises(Exception):
-            fts(dataset_name="empty", query="anything", dir_datacatalog_root=tmp_path)
+        items = fts(dataset_name="empty", query="anything", dir_datacatalog_root=tmp_path)
+        assert len(items) == 1
+        item = items[0]
+        assert "empty" in item.title
+        assert item.variables.get("open_file") == "y"
+        assert item.arg is not None and item.arg.endswith("empty-setting.json")
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ Create a new blank workflow in Alfred Preferences → Workflows, add a
 
 .. code-block:: bash
 
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything fts \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything fts \
         --dataset-name 'movie' \
         --query '{query}' \
         --action open_url
@@ -122,7 +122,7 @@ Add a **Keyword** object (no argument) connected to a **Run Script** object:
 
 .. code-block:: bash
 
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything rebuild-index \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything rebuild-index \
         --dataset-name 'movie'
 
 **Option B — list all datasets, pick one to rebuild**
@@ -133,7 +133,7 @@ Filter lists all datasets with fuzzy filtering:
 .. code-block:: bash
 
     # Script Filter
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything list-datasets-for-reset \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything list-datasets-for-reset \
         --dataset-name-query '{query}'
 
 Selecting a dataset from the list passes its name as ``arg`` to the Run
@@ -142,7 +142,7 @@ Script, which rebuilds it:
 .. code-block:: bash
 
     # Run Script (receives dataset name as {query})
-    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything rebuild-index \
+    ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything rebuild-index \
         --dataset-name '{query}'
 
 

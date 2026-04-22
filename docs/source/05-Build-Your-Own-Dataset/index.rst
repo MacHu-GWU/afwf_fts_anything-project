@@ -161,7 +161,7 @@ In Alfred Preferences → Workflows, add a **Script Filter** with:
 
   .. code-block:: bash
 
-      ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything fts \
+      ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything fts \
           --dataset-name 'bookmarks' \
           --query '{query}' \
           --action open_url
@@ -200,7 +200,7 @@ Datasets rarely come out perfect on the first try. A typical iteration cycle:
 
    .. code-block:: bash
 
-       ~/.local/bin/uvx --from "afwf-fts-anything==2.0.1" afwf-fts-anything rebuild-index \
+       ~/.local/bin/uvx --from "afwf-fts-anything==2.0.2" afwf-fts-anything rebuild-index \
            --dataset-name 'bookmarks'
 
 3. **Test** in Alfred.

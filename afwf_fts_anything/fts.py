@@ -59,6 +59,16 @@ def fts(
     catalog = DataCatalog(dir_root=dir_datacatalog_root)
     dataset = catalog.get_dataset(dataset_name)
 
+    if not dataset.path_setting.exists():
+        item = afwf.Item(
+            title=f"Setting file not found for dataset {dataset_name!r}",
+            subtitle=str(dataset.path_setting),
+            arg=str(dataset.path_setting),
+            icon=afwf.Icon(path=afwf.IconFileEnum.error),
+        )
+        item.open_file(str(dataset.path_setting))
+        return [item]
+
     if query == "?":
         # special "?" query: reveal the dataset's setting file in Finder instead of searching
         item = afwf.Item(
@@ -71,9 +81,29 @@ def fts(
 
     # normal search path: build the index on first run if it doesn't exist yet
     if not dataset.dir_index.exists():
-        dataset.build_index()
+        try:
+            dataset.build_index()
+        except Exception as e:
+            item = afwf.Item(
+                title=f"Failed to build index for dataset {dataset_name!r}: {type(e).__name__}",
+                subtitle=str(e),
+                arg=str(dataset.path_setting),
+                icon=afwf.Icon(path=afwf.IconFileEnum.error),
+            )
+            item.open_file(str(dataset.path_setting))
+            return [item]
 
-    doc_list = dataset.search(query or "*")  # empty query → "*" to return all docs
+    try:
+        doc_list = dataset.search(query or "*")  # empty query → "*" to return all docs
+    except Exception as e:
+        item = afwf.Item(
+            title=f"Search failed for dataset {dataset_name!r}: {type(e).__name__}",
+            subtitle=str(e),
+            arg=str(dataset.path_setting),
+            icon=afwf.Icon(path=afwf.IconFileEnum.error),
+        )
+        item.open_file(str(dataset.path_setting))
+        return [item]
     setting = dataset.setting
     items = []
     for doc in doc_list:
