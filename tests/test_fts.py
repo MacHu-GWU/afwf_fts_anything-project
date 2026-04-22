@@ -51,7 +51,7 @@ class TestFtsSearch:
     def test_search_hit(self):
         items = fts(dataset_name="movie", query="God Father", dir_datacatalog_root=dir_tests)
         assert len(items) > 0
-        assert items[0].arg == "2"
+        assert items[0].arg == "https://www.imdb.com/title/tt0068646"
 
     def test_search_hit_icon_is_resolved(self):
         items = fts(dataset_name="movie", query="God Father", dir_datacatalog_root=dir_tests)
@@ -66,7 +66,7 @@ class TestFtsSearch:
     def test_index_rebuilt_on_second_call(self):
         # index already exists after the first test run — result should be stable
         items = fts(dataset_name="movie", query="God Father", dir_datacatalog_root=dir_tests)
-        assert items[0].arg == "2"
+        assert items[0].arg == "https://www.imdb.com/title/tt0068646"
 
 
 class TestFtsAction:

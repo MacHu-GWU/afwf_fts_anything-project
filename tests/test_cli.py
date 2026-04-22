@@ -46,12 +46,12 @@ class TestFts:
         # search hit — Godfather is movie_id=2, icon resolves under icons/
         sf = fts(dataset_name="movie", query="God Father")
         assert len(sf.items) > 0
-        assert sf.items[0].arg == "2"
+        assert sf.items[0].arg == "https://www.imdb.com/title/tt0068646"
         assert sf.items[0].icon.path == str(project_home / "movie" / "icons" / "movie-icon.png")
 
         # index already exists on second call (no rebuild)
         sf = fts(dataset_name="movie", query="God Father")
-        assert sf.items[0].arg == "2"
+        assert sf.items[0].arg == "https://www.imdb.com/title/tt0068646"
 
         # no results
         sf = fts(dataset_name="movie", query="zzznomatchzzz")
