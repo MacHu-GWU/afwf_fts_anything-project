@@ -147,5 +147,5 @@ run from Terminal:
 
 **I want to search my own data, not the movie sample**
 
-See `Build Your Own Dataset <../05-Build-Your-Own-Dataset/index.html>`_ for a
+See :ref:`Build-Your-Own-Dataset` for a
 step-by-step walkthrough.
