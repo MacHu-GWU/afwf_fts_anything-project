@@ -15,6 +15,13 @@ Backlog
 **Miscellaneous**
 
 
+2.0.2 (2026-04-22)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Bugfixes**
+
+- ``fts()`` now returns a descriptive error Alfred item instead of raising an exception when the dataset setting file is missing, when index building fails, or when the search itself fails. The error item opens the setting file in Finder so the user can diagnose and fix the configuration directly from Alfred.
+
+
 2.0.1 (2026-04-22)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
