@@ -8,6 +8,7 @@ can be unit-tested in isolation.  ``cli.py`` is responsible for wiring real
 paths and sending feedback to Alfred.
 """
 
+import enum
 from pathlib import Path
 
 import afwf.api as afwf
@@ -15,10 +16,21 @@ import afwf.api as afwf
 from .data_catalog import DataCatalog
 
 
+class ActionEnum(str, enum.Enum):
+    """Alfred action triggered when the user presses Enter on a search result."""
+
+    open_url = "open_url"
+    """Pass *arg* to :meth:`afwf.Item.open_url` — suitable for URL-valued args."""
+
+    open_file = "open_file"
+    """Pass *arg* to :meth:`afwf.Item.open_file` — suitable for file-path args."""
+
+
 def fts(
     dataset_name: str,
     query: str,
     dir_datacatalog_root: Path,
+    action: ActionEnum = ActionEnum.open_url,
     path_error_log: Path | None = None,
 ) -> list[afwf.Item]:
     """
@@ -29,6 +41,8 @@ def fts(
         never a ``bool``).
     :param dir_datacatalog_root: root directory of the :class:`.DataCatalog`;
         the dataset lives at ``{dir_datacatalog_root}/{dataset_name}/``.
+    :param action: Alfred action bound to each result item; defaults to
+        :attr:`ActionEnum.open_url`.
     :param path_error_log: when provided and *query* is empty, an
         "Open error log" item is appended so the user can access it from Alfred.
 
@@ -70,7 +84,13 @@ def fts(
             arg=arg,
             autocomplete=setting.format_autocomplete(doc),
         )
-        item.open_url(url=arg)
+        if arg is not None:
+            if action is ActionEnum.open_url:
+                item.open_url(url=arg)
+            elif action is ActionEnum.open_file:
+                item.open_file(arg)
+            else:
+                raise TypeError(f"Unsupported action: {action!r}")
         icon = setting.format_icon(doc)
         if icon is not None:
             if icon.startswith("/"):

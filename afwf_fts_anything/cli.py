@@ -19,6 +19,7 @@ import afwf.opt.fuzzy_item.api as fuzzy_item
 from .data_catalog import DataCatalog
 from .paths import path_enum
 from . import fts as fts_mod
+from .fts import ActionEnum
 
 _log_error = afwf.log_error(
     log_file=path_enum.path_error_log,
@@ -30,6 +31,7 @@ _log_error = afwf.log_error(
 def fts(
     dataset_name: str,
     query: str,
+    action: ActionEnum = ActionEnum.open_url,
 ) -> afwf.ScriptFilter:
     """
     Thin wrapper around :func:`.fts_mod.fts` that supplies the project-home
@@ -42,6 +44,7 @@ def fts(
         dataset_name=dataset_name,
         query=query,
         dir_datacatalog_root=path_enum.dir_project_home,
+        action=action,
         path_error_log=path_enum.path_error_log,
     )
     return afwf.ScriptFilter(items=items)
@@ -138,6 +141,7 @@ class Command:
         self,
         dataset_name: str,
         query: str = "*",
+        action: str = ActionEnum.open_url.value,
     ):
         """Full-text search; see :func:`fts`.
 
@@ -145,7 +149,11 @@ class Command:
         string before delegating.
         """
         query = "" if isinstance(query, bool) else str(query)
-        fts(dataset_name=str(dataset_name), query=query).send_feedback()
+        fts(
+            dataset_name=str(dataset_name),
+            query=query,
+            action=ActionEnum(action),
+        ).send_feedback()
 
     def list_datasets(
         self,

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from afwf_fts_anything.fts import fts
+from afwf_fts_anything.fts import fts, ActionEnum
 
 # tests/ is the DataCatalog root; tests/movie/ is the "movie" dataset root
 dir_tests = Path(__file__).parent
@@ -67,6 +67,27 @@ class TestFtsSearch:
         # index already exists after the first test run — result should be stable
         items = fts(dataset_name="movie", query="God Father", dir_datacatalog_root=dir_tests)
         assert items[0].arg == "2"
+
+
+class TestFtsAction:
+    def test_open_file_action(self):
+        items = fts(
+            dataset_name="movie",
+            query="God Father",
+            dir_datacatalog_root=dir_tests,
+            action=ActionEnum.open_file,
+        )
+        assert len(items) > 0
+        assert items[0].variables.get("open_file") == "y"
+
+    def test_invalid_action_raises(self):
+        with pytest.raises(TypeError, match="Unsupported action"):
+            fts(
+                dataset_name="movie",
+                query="God Father",
+                dir_datacatalog_root=dir_tests,
+                action="bad_action",  # type: ignore[arg-type]
+            )
 
 
 class TestFtsErrorCases:
