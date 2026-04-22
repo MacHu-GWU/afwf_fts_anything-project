@@ -3,6 +3,7 @@ afwf_fts_anything.egg-info/
 docs/source/**/index.md
 .claude/claude-code-message*
 tmp/
+movie-index/
 not-exists-data.json.temp.zip
 
 # Byte-compiled / optimized / DLL files
