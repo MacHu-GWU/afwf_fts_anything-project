@@ -109,6 +109,31 @@ def list_datasets_for_reset(
     return afwf.ScriptFilter(items=items)
 
 
+def setup_sample_data() -> None:
+    """
+    Copy the bundled movie sample dataset into the project home so the workflow
+    works out of the box after a single ``uvx`` call.
+
+    Source  : ``afwf_fts_anything/tests/data/movie/`` (shipped with the package)
+    Dest    : ``~/.alfred-afwf/afwf_fts_anything/movie/``
+
+    All existing files in the destination are overwritten.
+    """
+    src_dir = path_enum.dir_package_test_data_movie
+    dest_dir = path_enum.dir_project_home / "movie"
+    dest_icons_dir = dest_dir / "icons"
+    dest_icons_dir.mkdir(parents=True, exist_ok=True)
+
+    files = [
+        (path_enum.path_package_test_movie_setting, dest_dir / "movie-setting.json"),
+        (path_enum.path_package_test_movie_data, dest_dir / "movie-data.json"),
+        (path_enum.path_package_test_movie_icon, dest_icons_dir / "movie-icon.png"),
+    ]
+    for src, dest in files:
+        shutil.copy2(src, dest)
+        print(f"file://{dest}")
+
+
 @_log_error
 def rebuild_index(
     dataset_name: str,
@@ -172,6 +197,10 @@ class Command:
     ):
         """Rebuild the search index for a dataset; see :func:`rebuild_index`."""
         rebuild_index(dataset_name=str(dataset_name))
+
+    def setup_sample_data(self):
+        """Copy the bundled movie sample dataset to the workflow home; see :func:`setup_sample_data`."""
+        setup_sample_data()
 
 
 def main():
