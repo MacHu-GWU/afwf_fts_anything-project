@@ -155,7 +155,7 @@ class Command:
             action=ActionEnum(action),
         ).send_feedback()
 
-    def list_datasets(
+    def list_datasets_for_reset(
         self,
         dataset_name_query: str = "",
     ):

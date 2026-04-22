@@ -20,7 +20,8 @@ class TestDatasetPaths:
         assert ds.path_setting == tmp_path / "movie-setting.json"
         assert ds.path_data == tmp_path / "movie-data.json"
         assert ds.dir_index == tmp_path / "movie-index"
-        assert ds.get_icon("poster") == tmp_path / "icons" / "poster.png"
+        assert ds.get_icon("poster.png") == tmp_path / "icons" / "poster.png"
+        assert ds.get_icon("poster") == tmp_path / "icons" / "poster"
 
 
 class TestExtractJsonFromZip:

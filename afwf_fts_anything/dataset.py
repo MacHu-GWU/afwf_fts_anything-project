@@ -61,8 +61,8 @@ class Dataset:
     # ------------------------------------------------------------------
 
     def get_icon(self, name: str) -> Path:
-        """Return the path to ``{dir_icons}/{name}.png``."""
-        return self.dir_icons / f"{name}.png"
+        """Return the path to ``{dir_icons}/{name}``."""
+        return self.dir_icons / name
 
     def get_setting(self) -> Setting:
         """Load and return the :class:`.Setting` from disk (no cache)."""
