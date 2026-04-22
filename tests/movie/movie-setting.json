@@ -11,7 +11,7 @@
     "data_url": "https://github.com/MacHu-GWU/afwf_fts_anything-project/releases/download/1.1.1/movie-data.json.zip",
     "title_field": "{title} ({genres}) rate {rating}",
     "subtitle_field": "{description}",
-    "arg_field": "{movie_id}",
+    "arg_field": "{url}",
     "autocomplete_field": "{title}",
     "icon_field": "movie-icon.png"
 }
